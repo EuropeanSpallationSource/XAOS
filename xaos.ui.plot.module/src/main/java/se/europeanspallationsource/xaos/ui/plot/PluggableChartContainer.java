@@ -20,7 +20,6 @@ package se.europeanspallationsource.xaos.ui.plot;
 import java.net.URL;
 import java.util.ServiceLoader;
 import java.util.logging.Logger;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -70,7 +69,7 @@ import static se.europeanspallationsource.xaos.ui.util.FXUtils.makeSquare;
  * @author claudio.rosati@esss.se
  * @css.class {@code chart-container-toolbar}
  */
-public class PluggableChartContainer extends HiddenSidesPane {
+public class PluggableChartContainer extends HiddenSidesPane { 
 
 	private static final Logger LOGGER = Logger.getLogger(PluggableChartContainer.class.getName());
 	private final ToggleButton pinButton = new ToggleButton(null, Icons.iconFor(PIN, 14));
@@ -131,14 +130,18 @@ public class PluggableChartContainer extends HiddenSidesPane {
 		//	Info/Help button...
 		infoButton.setOnAction(e -> handleInfoButton(infoButton));
 		infoButton.setTooltip(new Tooltip(getString("infoButton.tooltip")));
-		infoButton.disableProperty().bind(Bindings.or(
-			Bindings.isNull(pluggableProperty()),
-			Bindings.or(
-				Bindings.selectBoolean(pluggableProperty(), "plugins", "empty"),
-				infoButton.selectedProperty()
-			)
-		));
-
+                  // Using listeners instead of bindings to avoid warnings.
+                  pluggable.addListener((obs, oldVal, newVal) -> {
+                        if (obs != null && !newVal.getPlugins().isEmpty()) {
+                            infoButton.disableProperty().setValue(Boolean.FALSE);
+                        } else {
+                            infoButton.disableProperty().setValue(Boolean.TRUE);
+                        }
+                    });
+                  infoButton.selectedProperty().addListener((obs, oldVal, newVal) -> {
+                            infoButton.disableProperty().setValue(newVal);
+                    });
+                  
 		//	Pin button...
 		pinButton.setOnAction(e -> setPinnedSide(pinButton.isSelected() ? TOP : null));
 		pinButton.setTooltip(new Tooltip(getString("pinButton.tooltip")));
