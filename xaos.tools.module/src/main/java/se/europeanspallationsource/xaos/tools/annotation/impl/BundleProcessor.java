@@ -42,7 +42,7 @@ import se.europeanspallationsource.xaos.tools.annotation.BundleItem;
 import se.europeanspallationsource.xaos.tools.annotation.BundleItems;
 import se.europeanspallationsource.xaos.tools.lang.AbstractAnnotationProcessor;
 
-import static javax.lang.model.SourceVersion.RELEASE_12;
+import static javax.lang.model.SourceVersion.RELEASE_11;
 import static javax.lang.model.element.ElementKind.CLASS;
 import static javax.lang.model.element.ElementKind.INTERFACE;
 import static javax.tools.Diagnostic.Kind.ERROR;
@@ -53,7 +53,7 @@ import static javax.tools.StandardLocation.CLASS_OUTPUT;
  *
  * @author claudio.rosati@esss.se
  */
-@SupportedSourceVersion( RELEASE_12 )
+@SupportedSourceVersion( RELEASE_11 )
 @SupportedAnnotationTypes( {
 	"se.europeanspallationsource.xaos.tools.annotation.Bundle",
 	"se.europeanspallationsource.xaos.tools.annotation.BundleItem",
