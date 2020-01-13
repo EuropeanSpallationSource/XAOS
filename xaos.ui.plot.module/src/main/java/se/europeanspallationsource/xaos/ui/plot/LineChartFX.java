@@ -215,15 +215,56 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 		getData().stream()
 			.filter(series -> !seriesDrawnInPlot().contains(series.getName()))
 			.flatMap(series -> series.getData().stream())
-			.forEach(d -> d.getNode().setVisible(false));
+			.forEach(d -> {
+                                    if (d.getNode()!=null)
+                                        d.getNode().setVisible(false);});
 
 		//	Move plugins nodes to front.
 		ObservableList<Node> plotChildren = getPlotChildren();
 
 		plotChildren.remove(pluginsNodesGroup);
 		plotChildren.add(pluginsNodesGroup);
-
+                  
+                  // Required to update plugins properly.
+                  layout();
 	}
+
+        /*
+        This method update the axis range taking into account only the visible lines.
+        */
+        @Override
+        protected void updateAxisRange() {
+            final Axis<X> xa = getXAxis();
+            final Axis<Y> ya = getYAxis();
+            List<X> xData = null;
+            List<Y> yData = null;
+            if (xa.isAutoRanging()) {
+                xData = new ArrayList<>();
+            }
+            if (ya.isAutoRanging()) {
+                yData = new ArrayList<>();
+            }
+            if (xData != null || yData != null) {
+                for (Series<X, Y> series : getData()) {
+                    if (seriesDrawnInPlot().contains(series.getName())) {
+                        for (Data<X, Y> data : series.getData()) {
+                            if (xData != null) {
+                                xData.add(data.getXValue());
+                            }
+                            if (yData != null) {
+                                yData.add(data.getYValue());
+                            }
+                        }
+                    }
+                }
+                if (xData != null) {
+                    xa.invalidateRange(xData);
+                }
+                if (yData != null) {
+                    ya.invalidateRange(yData);
+                }
+            }
+        }
 
 	@Override
 	protected void updateLegend() {
@@ -243,7 +284,10 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 				Legend.LegendItem legenditem = new Legend.LegendItem(seriesName, selected -> {
 
 					series.getNode().setVisible(selected);
-					series.getData().forEach(d -> d.getNode().setVisible(selected));
+                                            // Nodes for lines that aren't drawn are null.
+					series.getData().forEach(d -> {
+                                                if (d.getNode()!=null)
+                                                    d.getNode().setVisible(selected);});
 
 					if ( selected ) {
 						if ( !seriesDrawnInPlot().contains(seriesName) ) {
@@ -254,6 +298,8 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 					}
 
 					getPlugins().forEach(p -> p.seriesVisibilityUpdated(this, series, seriesIndex, selected));
+                                        
+                                            updateAxisRange();
 
 				});
 
