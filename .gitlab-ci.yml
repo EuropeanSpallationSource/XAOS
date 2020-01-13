@@ -60,7 +60,7 @@ sonar:
   script:
     - mvn --batch-mode sonar:sonar -Dsonar.login=$SONARQUBE_TOKEN
   only:
-    - master@ics-software/XAOS
+    - master
 
 publish:
   stage: publish
@@ -68,6 +68,6 @@ publish:
   tags:
     - docker
   script:
-    - mvn --batch-mode -Dxaos.headless=true -Dserver.id=ossrh -Dserver.username=${USERNAME} -Dserver.password='${PASSWORD}' clean deploy
+    - mvn --batch-mode -Dxaos.headless=true -Dserver.id=ossrh -Dartifactory.username='${ARTIFACTORY_USERNAME}' -Dartifactory.password='${ARTIFACTORY_PASSWORD}' clean deploy
   only:
-    - master@ics-software/XAOS
+    - master
