@@ -1,68 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
+    <parent>
         <groupId>se.europeanspallationsource</groupId>
         <artifactId>xaos</artifactId>
         <version>0.5.0-SNAPSHOT</version>
     </parent>
 
-	<artifactId>xaos.tests.tools</artifactId>
+    <artifactId>xaos.tests.tools</artifactId>
     <packaging>jar</packaging>
     <name>XAOS - Tools Tests</name>
-	<description>
-		Provide tests difficult to implement inside the other modules.
-	</description>
-    <url>https://github.com/ESSICS/XAOS</url>
+    <description>
+        Provide tests difficult to implement inside the other modules.
+    </description>
 
-	<properties>
-		<!-- Dependencies Versions -->
-		<xaos.version>${project.version}</xaos.version>
-	</properties>
+    <properties>
+        <!-- Dependencies Versions -->
+        <xaos.version>${project.version}</xaos.version>
+    </properties>
 
-	<build>
-		<plugins>
-			<!-- ALPHABETICALLY SORTED BY groupId:artifactId -->
-			<plugin>
-				<groupId>com.github.ferstl</groupId>
-				<artifactId>depgraph-maven-plugin</artifactId>
-				<version>3.3.0</version>
-				<configuration>
-					<customStyleConfiguration>${project.basedir}/../doc/maven-dependencies.json</customStyleConfiguration>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.8</version>
-				<extensions>true</extensions>
-				<configuration>
-					<skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
-				<configuration>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>${project.groupId}</groupId>
-							<artifactId>xaos.tools</artifactId>
-							<version>${project.version}</version>
-						</path>
-						<!-- ... more ... -->
-					</annotationProcessorPaths>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <!-- ALPHABETICALLY SORTED BY groupId:artifactId -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>xaos.tools</artifactId>
+                            <version>${project.version}</version>
+                        </path>
+                        <!-- ... more ... -->
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
 
-		<!-- XAOS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <!-- XAOS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>xaos.tools</artifactId>

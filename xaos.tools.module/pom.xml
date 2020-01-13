@@ -1,40 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
+    <parent>
         <groupId>se.europeanspallationsource</groupId>
         <artifactId>xaos</artifactId>
         <version>0.5.0-SNAPSHOT</version>
     </parent>
 
-	<artifactId>xaos.tools</artifactId>
+    <artifactId>xaos.tools</artifactId>
     <packaging>jar</packaging>
     <name>XAOS - Tools</name>
-	<description>
-		Tools to be used by the other modules (e.g. annotation processors).
-	</description>
-    <url>https://github.com/ESSICS/XAOS</url>
+    <description>
+        Tools to be used by the other modules (e.g. annotation processors).
+    </description>
 
-	<properties>
-		<!-- Dependencies Versions -->
-		<caffeine.version>2.7.0</caffeine.version>
-		<commons-lang3.version>3.9</commons-lang3.version>
-	</properties>
+    <properties>
+        <!-- Dependencies Versions -->
+        <caffeine.version>2.7.0</caffeine.version>
+        <commons-lang3.version>3.9</commons-lang3.version>
+    </properties>
 
     <build>
         <plugins>
-			<!-- ALPHABETICALLY SORTED BY groupId:artifactId -->
-			<plugin>
-				<groupId>com.github.ferstl</groupId>
-				<artifactId>depgraph-maven-plugin</artifactId>
-				<version>3.3.0</version>
-				<configuration>
-					<customStyleConfiguration>${project.basedir}/../doc/maven-dependencies.json</customStyleConfiguration>
-				</configuration>
-			</plugin>
-			<!-- ADDED TO DISABLE ANNOTATION PROCESSING -->
+            <!-- ALPHABETICALLY SORTED BY groupId:artifactId -->
+            <!-- ADDED TO DISABLE ANNOTATION PROCESSING -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -42,43 +33,43 @@
                 <configuration>
                     <showDeprecation>true</showDeprecation>
                 </configuration>
-				<executions>
-					<execution>
-						<id>default-compile</id>
-						<configuration>
-							<compilerArgs>
-								<arg>-proc:none</arg>
-							</compilerArgs>
-						</configuration>
-					</execution>
-					<execution>
-						<id>default-testCompile</id>
-						<configuration>
-						</configuration>
-					</execution>
-				</executions>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <configuration>
+                            <compilerArgs>
+                                <arg>-proc:none</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <configuration>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
 
-	<dependencies>
+    <dependencies>
 
-		<!-- Apache - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>${commons-lang3.version}</version>
-			<scope>compile</scope>
-		</dependency>
+        <!-- Apache - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+            <scope>compile</scope>
+        </dependency>
 
-		<!-- Others - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-		<dependency>
-			<groupId>com.github.ben-manes.caffeine</groupId>
-			<artifactId>caffeine</artifactId>
-			<version>${caffeine.version}</version>
-			<scope>compile</scope>
-		</dependency>
+        <!-- Others - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>${caffeine.version}</version>
+            <scope>compile</scope>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 
 </project>

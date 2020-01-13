@@ -1,206 +1,197 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>se.europeanspallationsource</groupId>
-		<artifactId>xaos</artifactId>
-		<version>0.5.0-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>se.europeanspallationsource</groupId>
+        <artifactId>xaos</artifactId>
+        <version>0.5.0-SNAPSHOT</version>
+    </parent>
 
-	<artifactId>xaos.ui</artifactId>
-	<packaging>jar</packaging>
-	<name>XAOS - UI</name>
-	<description>
-		JavaFX-based portion of the XAOS framework, containing the JavaFX-based
-		controls and tools suitable for other projects too.
-	</description>
-	<url>https://github.com/ESSICS/XAOS</url>
+    <artifactId>xaos.ui</artifactId>
+    <packaging>jar</packaging>
+    <name>XAOS - UI</name>
+    <description>
+        JavaFX-based portion of the XAOS framework, containing the JavaFX-based
+        controls and tools suitable for other projects too.
+    </description>
 
-	<properties>
-		<!-- Dependencies Versions -->
-		<classgraph.version>4.8.43</classgraph.version>
-		<commons-lang3.version>3.9</commons-lang3.version>
-		<commons-text.version>1.7</commons-text.version>
-		<ikonli.version>11.3.4</ikonli.version>
-		<javafx.version>12</javafx.version>
-		<testfx.version>4.0.15-alpha</testfx.version>
-		<xaos.version>${project.version}</xaos.version>
-	</properties>
+    <properties>
+        <!-- Dependencies Versions -->
+        <classgraph.version>4.8.43</classgraph.version>
+        <commons-lang3.version>3.9</commons-lang3.version>
+        <commons-text.version>1.7</commons-text.version>
+        <ikonli.version>11.3.4</ikonli.version>
+        <javafx.version>13.0.1</javafx.version>
+        <testfx.version>4.0.15-alpha</testfx.version>
+        <xaos.version>${project.version}</xaos.version>
+    </properties>
 
-	<build>
-		<plugins>
-			<!-- ALPHABETICALLY SORTED BY groupId:artifactId -->
-			<plugin>
-				<groupId>com.github.ferstl</groupId>
-				<artifactId>depgraph-maven-plugin</artifactId>
-				<version>3.3.0</version>
-				<configuration>
-					<customStyleConfiguration>${project.basedir}/../doc/maven-dependencies.json</customStyleConfiguration>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
-				<configuration>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>${project.groupId}</groupId>
-							<artifactId>xaos.tools</artifactId>
-							<version>${project.version}</version>
-						</path>
-						<!-- ... more ... -->
-					</annotationProcessorPaths>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M3</version>
-				<configuration>
-					<argLine>
-						--add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED --add-opens javafx.controls/javafx.scene.control=xaos.tools
-					</argLine>
+    <build>
+        <plugins>
+            <!-- ALPHABETICALLY SORTED BY groupId:artifactId -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>xaos.tools</artifactId>
+                            <version>${project.version}</version>
+                        </path>
+                        <!-- ... more ... -->
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M3</version>
+                <configuration>
+                    <argLine>
+                        --add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED --add-opens javafx.controls/javafx.scene.control=xaos.tools
+                    </argLine>
 
-					<!-- THE FOLLOWING "excludes" AND "includes" SHOULD BE   -->
-					<!-- USED TO ALLOW EXECUTION OF A SINGLE SPECIFIC TEST.  -->
-					<!-- Otherwise they should be commented out.             -->
-<!--
-					<excludes>
-						<exclude>**/*Suite.java</exclude>
-					</excludes>
+                    <!-- THE FOLLOWING "excludes" AND "includes" SHOULD BE   -->
+                    <!-- USED TO ALLOW EXECUTION OF A SINGLE SPECIFIC TEST.  -->
+                    <!-- Otherwise they should be commented out.             -->
+                    <!--
+                                                            <excludes>
+                                                                    <exclude>**/*Suite.java</exclude>
+                                                            </excludes>
+                    
+                                                            <includes>
+                                                                    <include>**/IconsUITest.java</include>
+                                                                    <include>**/NavigatorControllerUITest.java</include>
+                                                                    <include>**/NavigatorPopupUITest.java</include>
+                                                            </includes>
+                    -->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-					<includes>
-						<include>**/IconsUITest.java</include>
-						<include>**/NavigatorControllerUITest.java</include>
-						<include>**/NavigatorPopupUITest.java</include>
-					</includes>
--->
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <dependencies>
 
-	<dependencies>
+        <!-- JavaFX - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>${javafx.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>${javafx.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>${javafx.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>${javafx.version}</version>
+            <scope>compile</scope>
+        </dependency>
 
-		<!-- JavaFX - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-base</artifactId>
-			<version>${javafx.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-controls</artifactId>
-			<version>${javafx.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-fxml</artifactId>
-			<version>${javafx.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-graphics</artifactId>
-			<version>${javafx.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-media</artifactId>
-			<version>${javafx.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-swing</artifactId>
-			<version>${javafx.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-web</artifactId>
-			<version>${javafx.version}</version>
-			<scope>compile</scope>
-		</dependency>
+        <!-- Apache - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+            <!--<scope>compile</scope>-->
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>${commons-text.version}</version>
+            <!--<scope>compile</scope>-->
+        </dependency>
 
-		<!-- Apache - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>${commons-lang3.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-text</artifactId>
-			<version>${commons-text.version}</version>
-			<scope>compile</scope>
-		</dependency>
+        <!-- ikonli-javafx  - -  - - - - - - - - - - - - - - - - - - - - - -  -->
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-core</artifactId>
+            <version>${ikonli.version}</version>
+            <!--<scope>compile</scope>-->
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-javafx</artifactId>
+            <version>${ikonli.version}</version>
+            <!--<scope>compile</scope>-->
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-fontawesome-pack</artifactId>
+            <version>${ikonli.version}</version>
+            <!--<scope>compile</scope>-->
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-materialdesign-pack</artifactId>
+            <version>${ikonli.version}</version>
+            <!--<scope>compile</scope>-->
+        </dependency>
 
-		<!-- ikonli-javafx  - -  - - - - - - - - - - - - - - - - - - - - - -  -->
-		<dependency>
-			<groupId>org.kordamp.ikonli</groupId>
-			<artifactId>ikonli-core</artifactId>
-			<version>${ikonli.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.kordamp.ikonli</groupId>
-			<artifactId>ikonli-javafx</artifactId>
-			<version>${ikonli.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.kordamp.ikonli</groupId>
-			<artifactId>ikonli-fontawesome-pack</artifactId>
-			<version>${ikonli.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.kordamp.ikonli</groupId>
-			<artifactId>ikonli-materialdesign-pack</artifactId>
-			<version>${ikonli.version}</version>
-			<scope>compile</scope>
-		</dependency>
+        <!-- XAOS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>xaos.tools</artifactId>
+            <version>${xaos.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>xaos.core</artifactId>
+            <version>${xaos.version}</version>
+        </dependency>
 
-		<!-- XAOS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>xaos.tools</artifactId>
-			<version>${xaos.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>xaos.core</artifactId>
-			<version>${xaos.version}</version>
-		</dependency>
+        <!-- Test - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-core</artifactId>
+            <version>${testfx.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-junit</artifactId>
+            <version>${testfx.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.classgraph</groupId>
+            <artifactId>classgraph</artifactId>
+            <version>${classgraph.version}</version>
+            <scope>test</scope>
+        </dependency>
 
-		<!-- Test - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-		<dependency>
-			<groupId>org.testfx</groupId>
-			<artifactId>testfx-core</artifactId>
-			<version>${testfx.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.testfx</groupId>
-			<artifactId>testfx-junit</artifactId>
-			<version>${testfx.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.github.classgraph</groupId>
-			<artifactId>classgraph</artifactId>
-			<version>${classgraph.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-	</dependencies>
+    </dependencies>
 
 </project>

@@ -1,50 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
+    <parent>
         <groupId>se.europeanspallationsource</groupId>
         <artifactId>xaos</artifactId>
-	    <version>0.5.0-SNAPSHOT</version>
+        <version>0.5.0-SNAPSHOT</version>
     </parent>
 
-	<artifactId>xaos.core</artifactId>
+    <artifactId>xaos.core</artifactId>
     <packaging>jar</packaging>
     <name>XAOS - Core</name>
-	<description>
-		Non graphical portion of the XAOS framework.
-	</description>
-    <url>https://github.com/ESSICS/XAOS</url>
+    <description>
+        Non graphical portion of the XAOS framework.
+    </description>
 
-	<properties>
-		<!-- Dependencies Versions -->
-		<rxjava.version>2.2.10</rxjava.version>
-		<xaos.version>${project.version}</xaos.version>
-	</properties>
-
-    <build>
-        <plugins>
-			<!-- ALPHABETICALLY SORTED BY groupId:artifactId -->
-			<plugin>
-				<groupId>com.github.ferstl</groupId>
-				<artifactId>depgraph-maven-plugin</artifactId>
-				<version>3.3.0</version>
-				<configuration>
-					<customStyleConfiguration>${project.basedir}/../doc/maven-dependencies.json</customStyleConfiguration>
-				</configuration>
-			</plugin>
-        </plugins>
-    </build>
+    <properties>
+        <!-- Dependencies Versions -->
+        <rxjava.version>2.2.10</rxjava.version>
+        <xaos.version>${project.version}</xaos.version>
+    </properties>
 
     <dependencies>
 
-		<!-- RxJava Dependencies - - - - - - - - - - - - - - - - - - - - - -  -->
-		<dependency>
-			<groupId>io.reactivex.rxjava2</groupId>
-			<artifactId>rxjava</artifactId>
-			<version>${rxjava.version}</version>
-		</dependency>
+        <!-- RxJava Dependencies - - - - - - - - - - - - - - - - - - - - - -  -->
+        <dependency>
+            <groupId>io.reactivex.rxjava2</groupId>
+            <artifactId>rxjava</artifactId>
+            <version>${rxjava.version}</version>
+        </dependency>
 
 
         <!-- XAOS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
