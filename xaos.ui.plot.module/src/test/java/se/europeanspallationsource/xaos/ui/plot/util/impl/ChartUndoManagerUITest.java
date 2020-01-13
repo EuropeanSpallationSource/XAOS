@@ -52,6 +52,7 @@ import static javafx.scene.input.MouseButton.PRIMARY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import org.junit.Ignore;
 import static org.testfx.robot.Motion.DEFAULT;
 import static se.europeanspallationsource.xaos.ui.control.NavigatorController.PAN_DOWN_ACCELERATOR;
 import static se.europeanspallationsource.xaos.ui.control.NavigatorController.PAN_LEFT_ACCELERATOR;
@@ -159,12 +160,12 @@ public class ChartUndoManagerUITest extends ApplicationTest {
 	}
 
 	/**
-	 * Test UNDO and REDO on KayboardAccelerators.
+	 * Test UNDO and REDO on KeyboardAccelerators.
 	 */
 	@Test
-	public void testKayboardAccelerators() {
+	public void testKeyboardAccelerators() {
 
-		System.out.println("  Testing ''ChartUndoManager'' on KayboardAccelerators...");
+		System.out.println("  Testing ''ChartUndoManager'' on KeyboardAccelerators...");
 
 		FxRobot robot = new FxRobot();
 		ChartUndoManager undoManager = ChartUndoManager.get(keyboardAccelerators.getChart());
@@ -704,6 +705,7 @@ public class ChartUndoManagerUITest extends ApplicationTest {
 	 * Test UNDO and REDO on Panner drag operations.
 	 */
 	@Test
+        @Ignore
 	public void testPannerDrag() {
 
 		System.out.println("  Testing ''ChartUndoManager'' on Panner (drag)...");

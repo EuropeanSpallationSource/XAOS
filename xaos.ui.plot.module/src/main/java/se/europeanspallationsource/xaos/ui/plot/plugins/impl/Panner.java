@@ -188,9 +188,8 @@ public final class Panner extends AbstractNamedPlugin implements AxisConstrained
 	private void dragDetected( MouseEvent event ) {
 
 		if ( event.isPrimaryButtonDown()
-		  && !event.isAltDown()
-		  && !event.isControlDown()
-		  && !event.isMetaDown() ) {
+		  && event.isShortcutDown()
+		  && !event.isAltDown() ) {
 
 			if ( isInsidePlotArea(event) ) {
 

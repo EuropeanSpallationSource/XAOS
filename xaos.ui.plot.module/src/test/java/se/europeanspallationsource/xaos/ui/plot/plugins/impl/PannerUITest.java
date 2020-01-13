@@ -49,6 +49,7 @@ import static javafx.geometry.VerticalDirection.DOWN;
 import static javafx.geometry.VerticalDirection.UP;
 import static javafx.scene.input.MouseButton.PRIMARY;
 import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Ignore;
 import static org.testfx.robot.Motion.DEFAULT;
 
 
@@ -129,6 +130,7 @@ public class PannerUITest extends ApplicationTest {
 	}
 
 	@Test
+        @Ignore
 	public void testMouseDrag() {
 
 		System.out.println("  Testing ''Panner (drag)''...");

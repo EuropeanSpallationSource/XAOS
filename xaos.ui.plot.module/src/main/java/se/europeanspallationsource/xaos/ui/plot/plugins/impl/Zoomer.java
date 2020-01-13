@@ -225,7 +225,7 @@ public final class Zoomer extends AbstractNamedPlugin implements AxisConstrained
 	private void dragDetected( MouseEvent event ) {
 
 		if ( event.isPrimaryButtonDown()
-		  && event.isShortcutDown()
+		  && !event.isShortcutDown()
 		  && !event.isAltDown() ) {
 
 			if ( isInsidePlotArea(event) ) {
@@ -342,7 +342,7 @@ public final class Zoomer extends AbstractNamedPlugin implements AxisConstrained
 
 		if ( event.getButton() == MouseButton.PRIMARY
 		  && event.getClickCount() == 2
-		  && event.isShortcutDown()
+		  && !event.isShortcutDown()
 		  && !event.isAltDown()
 		  && !event.isShiftDown() ) {
 
