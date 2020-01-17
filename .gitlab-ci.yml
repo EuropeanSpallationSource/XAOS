@@ -43,15 +43,6 @@ test:
       - xaos.ui.module/target/surefire-reports/TEST-*.xml
       - xaos.tests.tools.module/target/surefire-reports/TEST-*.xml
 
-package:
-  stage: package
-  image: registry.esss.lu.se/ics-docker/maven:openjdk-11
-  tags:
-    - docker
-  script:
-    - echo "${GPG_PRIVATE_KEY}" | gpg --batch --import
-    - mvn --batch-mode -Dxaos.headless=true -Dgpg.passphrase=${GPG_PASSPHRASE} -Dmaven.test.skip clean install
-
 sonar:
   stage: analyse
   image: registry.esss.lu.se/ics-docker/maven:openjdk-11
@@ -61,6 +52,7 @@ sonar:
     - mvn --batch-mode sonar:sonar -Dsonar.login=$SONARQUBE_TOKEN
   only:
     - master
+    - develop
 
 publish:
   stage: publish
@@ -71,3 +63,4 @@ publish:
     - mvn --batch-mode -Dxaos.headless=true -Dserver.id=ossrh -Dartifactory.username='${ARTIFACTORY_USERNAME}' -Dartifactory.password='${ARTIFACTORY_PASSWORD}' clean deploy
   only:
     - master
+    - develop
