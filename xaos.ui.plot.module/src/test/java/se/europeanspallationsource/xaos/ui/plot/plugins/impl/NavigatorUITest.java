@@ -46,6 +46,7 @@ import static javafx.geometry.Pos.CENTER;
 import static javafx.scene.input.KeyCode.ALT;
 import static javafx.scene.input.MouseButton.PRIMARY;
 import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Ignore;
 import static org.testfx.robot.Motion.DEFAULT;
 
 
@@ -135,6 +136,7 @@ public class NavigatorUITest extends ApplicationTest {
 	}
 
 	@Test
+         @Ignore // Ignoring because popups don't work on xvfb
 	public void test() {
 
 		System.out.println("  Testing ''Navigator''...");
