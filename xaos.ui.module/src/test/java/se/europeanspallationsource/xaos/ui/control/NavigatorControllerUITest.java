@@ -148,7 +148,7 @@ public class NavigatorControllerUITest extends ApplicationTest {
 		assertTrue(node.getStyle().contains(FillStyle.HOVER.getStyle()));
 
 		//	Move the mouse cursor outside the node and check its status.
-		robot.moveTo(node, position, new Point2D(100, 100), DEFAULT);
+		robot.moveTo(node, position, new Point2D(0, 50), DEFAULT);
 		assertTrue(node.getStyle().contains(FillStyle.DEFAULT.getStyle()) || node.getStyle().contains(FillStyle.LIGHTER.getStyle()));
 
 		//	Mode the cursor over the node, press and keep pressed the primary
@@ -158,7 +158,7 @@ public class NavigatorControllerUITest extends ApplicationTest {
 		assertTrue(node.getStyle().contains(FillStyle.HOVER.getStyle()));
 		robot.press(PRIMARY);
 		assertTrue(node.getStyle().contains(FillStyle.PRESSED.getStyle()));
-		robot.moveTo(node, position, new Point2D(100, 100), DEFAULT);
+		robot.moveTo(node, position, new Point2D(0, 50), DEFAULT);
 		assertTrue(node.getStyle().contains(FillStyle.PRESSED.getStyle()));
 		robot.release(PRIMARY);
 		assertTrue(node.getStyle().contains(FillStyle.DEFAULT.getStyle()) || node.getStyle().contains(FillStyle.LIGHTER.getStyle()));
