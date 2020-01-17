@@ -434,6 +434,7 @@ public class ChartUndoManagerUITest extends ApplicationTest {
 	 * Test UNDO and REDO on Navigator.
 	 */
 	@Test
+        @Ignore // Not running on xvfb either...
 	public void testNavigator() {
 
 		System.out.println("  Testing ''ChartUndoManager'' on Navigator...");
