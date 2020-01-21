@@ -65,7 +65,7 @@ publish:
   tags:
     - docker
   script:
-    - mvn --batch-mode -Dxaos.headless=true -Dserver.id=ossrh -Dartifactory.username='${ARTIFACTORY_USERNAME}' -Dartifactory.password='${ARTIFACTORY_PASSWORD}' clean deploy
+    - mvn --batch-mode -Dxaos.headless=true -DskipTests=true -Dartifactory.username='${ARTIFACTORY_USERNAME}' -Dartifactory.password='${ARTIFACTORY_PASSWORD}' clean deploy
   only:
     - master
     - develop
