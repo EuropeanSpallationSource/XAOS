@@ -48,16 +48,16 @@ test:
             - xaos.ui.module/target/surefire-reports/TEST-*.xml
             - xaos.tests.tools.module/target/surefire-reports/TEST-*.xml
     
-sonar:
-  stage: analyse
-  image: registry.esss.lu.se/ics-docker/maven:openjdk-11
-  tags:
-    - docker
-  script:
-    - mvn -X --batch-mode -Dsonar.login=$SONARQUBE_TOKEN -Dsonar.junit.reportPaths=target/surefire-reports sonar:sonar
-  only:
-    - master
-    - develop
+#sonar:
+#  stage: analyse
+#  image: registry.esss.lu.se/ics-docker/maven:openjdk-11
+#  tags:
+#    - docker
+#  script:
+#    - mvn -X --batch-mode -Dsonar.login=$SONARQUBE_TOKEN -Dsonar.junit.reportPaths=target/surefire-reports sonar:sonar
+#  only:
+#    - master
+#    - develop
 
 publish:
   stage: publish
