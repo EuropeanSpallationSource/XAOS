@@ -36,20 +36,30 @@ test:
   script:
     - /bin/sh -c "xvfb-run mvn --batch-mode test"
   artifacts:
-    reports:
-      junit:
-      - xaos.core.module/target/surefire-reports/TEST-*.xml
-      - xaos.tools.module/target/surefire-reports/TEST-*.xml
-      - xaos.ui.module/target/surefire-reports/TEST-*.xml
-      - xaos.tests.tools.module/target/surefire-reports/TEST-*.xml
-
+      paths:
+          - xaos.core.module/target/surefire-reports/TEST-*.xml
+          - xaos.tools.module/target/surefire-reports/TEST-*.xml
+          - xaos.ui.module/target/surefire-reports/TEST-*.xml
+          - xaos.tests.tools.module/target/surefire-reports/TEST-*.xml
+          - xaos.core.module/target/jacoco.exec
+          - xaos.tools.module/target/jacoco.exec
+          - xaos.ui.module/target/jacoco.exec
+          - xaos.tests.tools.module/target/jacoco.exec
+          
+        reports:
+          junit:
+          - xaos.core.module/target/surefire-reports/TEST-*.xml
+          - xaos.tools.module/target/surefire-reports/TEST-*.xml
+          - xaos.ui.module/target/surefire-reports/TEST-*.xml
+          - xaos.tests.tools.module/target/surefire-reports/TEST-*.xml
+    
 sonar:
   stage: analyse
   image: registry.esss.lu.se/ics-docker/maven:openjdk-11
   tags:
     - docker
   script:
-    - mvn -X --batch-mode sonar:sonar -Dsonar.login=$SONARQUBE_TOKEN
+    - mvn -X --batch-mode -Dsonar.login=$SONARQUBE_TOKEN -Dsonar.junit.reportPaths=target/surefire-reports -Dsonar.jacoco.reportPaths=target/jacoco.exec sonar:sonar
   only:
     - master
     - develop
