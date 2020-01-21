@@ -26,6 +26,6 @@ module xaos.app.preloader {
 	requires transitive javafx.graphics;
 	requires transitive xaos.core;
 
-	exports se.europeanspallationsource.xaos.app.preloader;
+	exports eu.ess.xaos.app.preloader;
 
 }

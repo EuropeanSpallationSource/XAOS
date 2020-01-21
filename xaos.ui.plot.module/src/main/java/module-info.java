@@ -40,23 +40,23 @@ module xaos.ui.plot {
 	requires transitive xaos.ui;
 	requires java.base;
 
-	uses se.europeanspallationsource.xaos.ui.plot.spi.ToolbarContributor;
+	uses eu.ess.xaos.ui.plot.spi.ToolbarContributor;
 	
-	provides se.europeanspallationsource.xaos.ui.plot.spi.ToolbarContributor
-		with se.europeanspallationsource.xaos.ui.plot.spi.impl.AxisPropertiesContributor,
-			 se.europeanspallationsource.xaos.ui.plot.spi.impl.FitContributor,
-			 se.europeanspallationsource.xaos.ui.plot.spi.impl.SaveChartAsImageContributor,
-			 se.europeanspallationsource.xaos.ui.plot.spi.impl.SaveChartDataContributor,
-			 se.europeanspallationsource.xaos.ui.plot.spi.impl.StatisticsContributor;
+	provides eu.ess.xaos.ui.plot.spi.ToolbarContributor
+		with eu.ess.xaos.ui.plot.spi.impl.AxisPropertiesContributor,
+			 eu.ess.xaos.ui.plot.spi.impl.FitContributor,
+			 eu.ess.xaos.ui.plot.spi.impl.SaveChartAsImageContributor,
+			 eu.ess.xaos.ui.plot.spi.impl.SaveChartDataContributor,
+			 eu.ess.xaos.ui.plot.spi.impl.StatisticsContributor;
 
-	exports se.europeanspallationsource.xaos.ui.plot;
-	exports se.europeanspallationsource.xaos.ui.plot.data;
-	exports se.europeanspallationsource.xaos.ui.plot.plugins;
-	exports se.europeanspallationsource.xaos.ui.plot.spi;
-	exports se.europeanspallationsource.xaos.ui.plot.util;
+	exports eu.ess.xaos.ui.plot;
+	exports eu.ess.xaos.ui.plot.data;
+	exports eu.ess.xaos.ui.plot.plugins;
+	exports eu.ess.xaos.ui.plot.spi;
+	exports eu.ess.xaos.ui.plot.util;
 
-	opens se.europeanspallationsource.xaos.ui.plot to xaos.tools;
-	opens se.europeanspallationsource.xaos.ui.plot.plugins to xaos.tools;
-	opens se.europeanspallationsource.xaos.ui.plot.spi.impl to xaos.tools, javafx.fxml;
+	opens eu.ess.xaos.ui.plot to xaos.tools;
+	opens eu.ess.xaos.ui.plot.plugins to xaos.tools;
+	opens eu.ess.xaos.ui.plot.spi.impl to xaos.tools, javafx.fxml;
 
 }

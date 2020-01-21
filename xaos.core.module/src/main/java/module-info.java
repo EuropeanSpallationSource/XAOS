@@ -24,13 +24,13 @@ module xaos.core {
 	requires io.reactivex.rxjava2;
 	requires xaos.tools;
 
-	uses se.europeanspallationsource.xaos.core.util.spi.LogHandlerProvider;
+	uses eu.ess.xaos.core.util.spi.LogHandlerProvider;
 
-	exports se.europeanspallationsource.xaos.core.util;
-	exports se.europeanspallationsource.xaos.core.util.function;
-	exports se.europeanspallationsource.xaos.core.util.io;
-	exports se.europeanspallationsource.xaos.core.util.spi;
+	exports eu.ess.xaos.core.util;
+	exports eu.ess.xaos.core.util.function;
+	exports eu.ess.xaos.core.util.io;
+	exports eu.ess.xaos.core.util.spi;
 
-	opens se.europeanspallationsource.xaos.core.util to xaos.tools;
+	opens eu.ess.xaos.core.util to xaos.tools;
 
 }

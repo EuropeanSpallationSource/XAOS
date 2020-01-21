@@ -38,27 +38,27 @@ module xaos.ui {
 	requires transitive xaos.core;
 	requires transitive xaos.tools;
 
-	uses se.europeanspallationsource.xaos.ui.spi.ClassIconProvider;
-	uses se.europeanspallationsource.xaos.ui.spi.FileExtensionIconProvider;
-	uses se.europeanspallationsource.xaos.ui.spi.IconProvider;
-	uses se.europeanspallationsource.xaos.ui.spi.MIMETypeIconProvider;
+	uses eu.ess.xaos.ui.spi.ClassIconProvider;
+	uses eu.ess.xaos.ui.spi.FileExtensionIconProvider;
+	uses eu.ess.xaos.ui.spi.IconProvider;
+	uses eu.ess.xaos.ui.spi.MIMETypeIconProvider;
 
-	provides se.europeanspallationsource.xaos.ui.spi.ClassIconProvider
-		with se.europeanspallationsource.xaos.ui.spi.impl.DefaultJavaFXClassIconProvider;
-	provides se.europeanspallationsource.xaos.ui.spi.FileExtensionIconProvider
-		with se.europeanspallationsource.xaos.ui.spi.impl.DefaultFileExtensionIconProvider;
-	provides se.europeanspallationsource.xaos.ui.spi.IconProvider
-		with se.europeanspallationsource.xaos.ui.spi.impl.DefaultCommonIconProvider;
-	provides se.europeanspallationsource.xaos.ui.spi.MIMETypeIconProvider
-		with se.europeanspallationsource.xaos.ui.spi.impl.DefaultMIMETypeIconProvider;
+	provides eu.ess.xaos.ui.spi.ClassIconProvider
+		with eu.ess.xaos.ui.spi.impl.DefaultJavaFXClassIconProvider;
+	provides eu.ess.xaos.ui.spi.FileExtensionIconProvider
+		with eu.ess.xaos.ui.spi.impl.DefaultFileExtensionIconProvider;
+	provides eu.ess.xaos.ui.spi.IconProvider
+		with eu.ess.xaos.ui.spi.impl.DefaultCommonIconProvider;
+	provides eu.ess.xaos.ui.spi.MIMETypeIconProvider
+		with eu.ess.xaos.ui.spi.impl.DefaultMIMETypeIconProvider;
 
-	exports se.europeanspallationsource.xaos.ui.control;
-	exports se.europeanspallationsource.xaos.ui.control.svg;
-	exports se.europeanspallationsource.xaos.ui.control.tree;
-	exports se.europeanspallationsource.xaos.ui.control.tree.directory;
-	exports se.europeanspallationsource.xaos.ui.spi;
-	exports se.europeanspallationsource.xaos.ui.util;
+	exports eu.ess.xaos.ui.control;
+	exports eu.ess.xaos.ui.control.svg;
+	exports eu.ess.xaos.ui.control.tree;
+	exports eu.ess.xaos.ui.control.tree.directory;
+	exports eu.ess.xaos.ui.spi;
+	exports eu.ess.xaos.ui.util;
 
-	opens se.europeanspallationsource.xaos.ui.control to javafx.fxml;
+	opens eu.ess.xaos.ui.control to javafx.fxml;
 
 }

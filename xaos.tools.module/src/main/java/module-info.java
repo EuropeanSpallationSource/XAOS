@@ -25,13 +25,13 @@ module xaos.tools {
 	requires java.logging;
 	requires org.apache.commons.lang3;
 
-	exports se.europeanspallationsource.xaos.tools.annotation;
-	exports se.europeanspallationsource.xaos.tools.lang;
+	exports eu.ess.xaos.tools.annotation;
+	exports eu.ess.xaos.tools.lang;
 
 	uses javax.annotation.processing.Processor;
 
 	provides javax.annotation.processing.Processor
-		with se.europeanspallationsource.xaos.tools.annotation.impl.BundleProcessor,
-			 se.europeanspallationsource.xaos.tools.annotation.impl.ServiceProviderProcessor;
+		with eu.ess.xaos.tools.annotation.impl.BundleProcessor,
+			 eu.ess.xaos.tools.annotation.impl.ServiceProviderProcessor;
 
 }

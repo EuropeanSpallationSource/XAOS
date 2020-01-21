@@ -28,6 +28,6 @@ module xaos.app {
 	requires transitive xaos.tools;
 	requires transitive xaos.ui;
 
-	exports se.europeanspallationsource.xaos.app;
+	exports eu.ess.xaos.app;
 
 }

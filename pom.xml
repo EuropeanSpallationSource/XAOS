@@ -3,7 +3,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>se.europeanspallationsource</groupId>
+    <groupId>eu.ess</groupId>
     <artifactId>xaos</artifactId>
     <version>0.5.0-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -14,7 +14,7 @@
         environment  used for creating accelerator physics applications, scripts
         and services.
     </description>
-    <url>https://github.com/ESSICS/XAOS</url>
+    <url>https://gitlab.esss.lu.se/ess-crs/xaos</url>
 
     <licenses>
         <license>
@@ -28,15 +28,10 @@
             <name>Claudio Rosati</name>
             <email>claudio.rosati@esss.se</email>
             <organization>European Spallation Source ERIC</organization>
-            <organizationUrl>https://europeanspallationsource.se/</organizationUrl>
+            <organizationUrl>https://ess.eu/</organizationUrl>
         </developer>
     </developers>
 
-    <scm>
-        <connection>scm:git:git://github.com/ESSICS/XAOS.git</connection>
-        <developerConnection>scm:git:ssh://github.com/ESSICS/XAOS.git</developerConnection>
-        <url>https://github.com/ESSICS/XAOS/tree/master</url>
-    </scm>
 
     <properties>
         <java.release>11</java.release>
@@ -317,8 +312,8 @@
                                 <contextUrl>${artifactory.url}</contextUrl>
                                 <username>${artifactory.username}</username>
                                 <password>${artifactory.password}</password>
-                                <repoKey>XAOS/release</repoKey>
-                                <snapshotRepoKey>XAOS/snapshot</snapshotRepoKey>
+                                <repoKey>OpenXAL/release</repoKey>
+                                <snapshotRepoKey>OpenXAL/snapshot</snapshotRepoKey>
                             </publisher>
                         </configuration>
                     </execution>
