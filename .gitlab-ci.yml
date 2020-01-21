@@ -49,7 +49,7 @@ sonar:
   tags:
     - docker
   script:
-    - mvn --batch-mode sonar:sonar -Dsonar.login=$SONARQUBE_TOKEN
+    - mvn -X --batch-mode sonar:sonar -Dsonar.login=$SONARQUBE_TOKEN
   only:
     - master
     - develop
