@@ -57,7 +57,6 @@ test:
 #    - mvn -X --batch-mode -Dsonar.login=$SONARQUBE_TOKEN -Dsonar.junit.reportPaths=target/surefire-reports sonar:sonar
 #  only:
 #    - master
-#    - develop
 
 publish:
   stage: publish
@@ -68,4 +67,3 @@ publish:
     - mvn --batch-mode -Dxaos.headless=true -DskipTests=true -Dartifactory.username='${ARTIFACTORY_USERNAME}' -Dartifactory.password='${ARTIFACTORY_PASSWORD}' clean deploy
   only:
     - master
-    - develop
