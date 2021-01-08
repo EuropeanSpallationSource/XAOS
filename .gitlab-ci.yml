@@ -2,6 +2,13 @@
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
 
+.maven: &maven
+  image: registry.esss.lu.se/ics-docker/maven:openjdk-11
+  only:
+    - /^site.ess.*$/
+  tags:
+    - docker
+
 stages:
   - compile
   - test
@@ -10,10 +17,8 @@ stages:
   - publish
 
 compile:
+  <<: *maven
   stage: compile
-  image: registry.esss.lu.se/ics-docker/maven:openjdk-11
-  tags:
-    - docker
   script:
     - mvn --batch-mode compile
   artifacts:
@@ -29,10 +34,8 @@ compile:
     expire_in: 1 day
 
 test:
+  <<: *maven
   stage: test
-  image: registry.esss.lu.se/ics-docker/maven:openjdk-11
-  tags:
-    - docker
   script:
     - /bin/sh -c "xvfb-run mvn --batch-mode test"
   artifacts:
@@ -50,19 +53,30 @@ test:
     
 #sonar:
 #  stage: analyse
-#  image: registry.esss.lu.se/ics-docker/maven:openjdk-11
-#  tags:
-#    - docker
+#  <<: *maven
 #  script:
 #    - mvn -X --batch-mode -Dsonar.login=$SONARQUBE_TOKEN -Dsonar.junit.reportPaths=target/surefire-reports sonar:sonar
 #  only:
 #    - master
 
+pages:
+  stage: publish
+  <<: *maven
+  script:
+    - 'mvn $MAVEN_CLI_OPTS javadoc:aggregate'
+    - 'mv target/site/apidocs public'
+  artifacts:
+    paths:
+      - public
+  only:
+    refs:
+      - master
+    changes:
+      - pom.xml
+
 publish:
   stage: publish
-  image: registry.esss.lu.se/ics-docker/maven:openjdk-11
-  tags:
-    - docker
+  <<: *maven
   script:
     - mvn --batch-mode -Dxaos.headless=true -DskipTests=true -Dartifactory.username='${ARTIFACTORY_USERNAME}' -Dartifactory.password='${ARTIFACTORY_PASSWORD}' clean deploy
   only:
