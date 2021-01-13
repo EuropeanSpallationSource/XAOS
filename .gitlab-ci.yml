@@ -4,8 +4,6 @@ variables:
 
 .maven: &maven
   image: registry.esss.lu.se/ics-docker/maven:openjdk-11
-  only:
-    - /^site.ess.*$/
   tags:
     - docker
 
