@@ -48,7 +48,7 @@ import static java.util.logging.Level.WARNING;
 public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 
 	private static final Logger LOGGER = Logger.getLogger(LineChartFX.class.getName());
-
+        
 	/**
 	 * Quick way of creating a line chart showing the given {@code data}. X axis
 	 * will contain the index in the data point in the given list.
@@ -106,11 +106,15 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 	public LineChartFX( Axis<X> xAxis, Axis<Y> yAxis, ObservableList<Series<X, Y>> data ) {
 
 		super(xAxis, yAxis, data);
-
-		getStylesheets().add(LineChartFX.class.getResource("/styles/chart.css").toExternalForm());
+                
 		getPlotChildren().add(pluginsNodesGroup);
 
 	}
+
+        @Override
+        public String getUserAgentStylesheet() {
+            return LineChartFX.class.getResource("/styles/chart.css").toExternalForm();
+        }
 
 	/**
 	 * More robust method for adding plugins to chart.
@@ -195,7 +199,7 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 		Validate.isTrue(longitudinal < size, "Out of range 'longitudinal' parameter.");
 
 		lookup(".chart").setStyle(SeriesColorUtils.styles(horizontal, vertical, longitudinal));
-
+                
 	}
 
 	@Override
@@ -309,13 +313,13 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 					"default-color" + ( seriesIndex % 8 ),
 					"series" + seriesIndex
 				);
-
+                                
 				seriesDrawnInPlot().add(seriesName);
 				legend.getItems().add(legenditem);
 
-			}
+                        }
 
-		}
+            }
 
 		setLegend(legend);
 
