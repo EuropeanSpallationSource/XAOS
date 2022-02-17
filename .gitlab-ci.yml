@@ -35,7 +35,7 @@ test:
   <<: *maven
   stage: test
   script:
-    - /bin/sh -c "xvfb-run mvn --batch-mode test"
+    - /bin/sh -c "xvfb-run -s '-screen 0 1280x1024x16' mvn --batch-mode test"
   timeout: 5 minutes
   artifacts:
     paths:
