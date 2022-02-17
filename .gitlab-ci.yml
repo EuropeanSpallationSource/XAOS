@@ -36,6 +36,7 @@ test:
   stage: test
   script:
     - /bin/sh -c "xvfb-run mvn --batch-mode test"
+  timeout: 5 minutes
   artifacts:
     paths:
         - xaos.core.module/target/surefire-reports/TEST-*.xml
