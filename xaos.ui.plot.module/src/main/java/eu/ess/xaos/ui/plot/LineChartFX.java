@@ -32,8 +32,11 @@ import eu.ess.xaos.core.util.LogUtils;
 import eu.ess.xaos.ui.plot.Legend.LegendItem;
 import eu.ess.xaos.ui.plot.plugins.Pluggable;
 import eu.ess.xaos.ui.plot.util.SeriesColorUtils;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.util.logging.Level.WARNING;
+import javafx.scene.paint.Color;
 
 
 /**
@@ -49,6 +52,8 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 
 	private static final Logger LOGGER = Logger.getLogger(LineChartFX.class.getName());
         
+        private final Map<Integer,Color> colorMap = new HashMap<>();
+
 	/**
 	 * Quick way of creating a line chart showing the given {@code data}. X axis
 	 * will contain the index in the data point in the given list.
@@ -200,6 +205,9 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 
 		lookup(".chart").setStyle(SeriesColorUtils.styles(horizontal, vertical, longitudinal));
                 
+                colorMap.put(horizontal, SeriesColorUtils.HORIZONTAL);
+                colorMap.put(vertical, SeriesColorUtils.VERTICAL);
+                colorMap.put(longitudinal, SeriesColorUtils.LONGITUDINAL);
 	}
 
 	@Override
@@ -349,4 +357,39 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 
 	}
 
+        public void setLineColor(String seriesName, Color color) {
+            for (Series<X, Y> series : getData()) {
+                if (series.getName().equals(seriesName)) {
+                    int index = getData().indexOf(series);
+                    colorMap.put(index, color);
+                    updateChartStyle();
+                    return;
+                }
+            }
+        }
+
+        public void setDefaultLineColors() {
+            lookup(".chart").setStyle(SeriesColorUtils.styles());
+            colorMap.clear();
+        }
+        
+        private void updateChartStyle(){
+            	int colorIndex = 0;
+		StringBuilder builder = new StringBuilder(360);
+
+		for ( int i = 0; i < 8; i++ ) {
+			if ( colorMap.containsKey(i) ) {
+				builder.append(SeriesColorUtils.styleFor(colorMap.get(i), i));
+			} else {
+				builder.append(SeriesColorUtils.styleFor(SeriesColorUtils.COLORS[colorIndex++], i));
+			}
+
+			if ( i < 7 ) {
+				builder.append(' ');
+			}
+
+		}
+                   
+                lookup(".chart").setStyle(builder.toString());     
+        }
 }

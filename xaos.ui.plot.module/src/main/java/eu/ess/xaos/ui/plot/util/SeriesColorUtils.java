@@ -35,7 +35,7 @@ public class SeriesColorUtils {
 	public static final Color LONGITUDINAL = ColorUtils.ESS_ON;
 	public static final Color VERTICAL     = ColorUtils.ESS_PRIMARY;
 
-	private static final Color[] COLORS = {
+	public static final Color[] COLORS = {
 		Color.valueOf("lightblue"),
 		Color.valueOf("gold"),
 		Color.valueOf("orchid"),
