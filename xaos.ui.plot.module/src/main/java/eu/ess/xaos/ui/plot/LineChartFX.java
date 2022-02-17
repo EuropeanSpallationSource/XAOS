@@ -317,8 +317,10 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 				seriesDrawnInPlot().add(seriesName);
 				legend.getItems().add(legenditem);
 
+                        } else {
+                            // Always include lines that are not shown in the legend
+                            seriesDrawnInPlot().add(seriesName);
                         }
-
             }
 
 		setLegend(legend);
