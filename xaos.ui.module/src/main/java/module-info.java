@@ -31,7 +31,7 @@ module xaos.ui {
 	requires javafx.web;
 	requires org.apache.commons.lang3;
 	requires org.apache.commons.text;
-	requires org.kordamp.iconli.core;
+	requires org.kordamp.ikonli.core;
 	requires org.kordamp.ikonli.fontawesome;
 	requires org.kordamp.ikonli.javafx;
 	requires org.kordamp.ikonli.materialdesign;

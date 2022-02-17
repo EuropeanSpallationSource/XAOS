@@ -18,11 +18,10 @@
 
     <properties>
         <!-- Dependencies Versions -->
-        <commons-lang3.version>3.9</commons-lang3.version>
+        <commons-lang3.version>3.12.0</commons-lang3.version>
         <commons-math3.version>3.6.1</commons-math3.version>
-        <controlsfx.version>11.0.0</controlsfx.version>
+        <controlsfx.version>11.1.1</controlsfx.version>
         <javafx.version>17.0.2</javafx.version>
-        <jlibs-i18n.version>2.2.2</jlibs-i18n.version>
         <testfx.version>4.0.15-alpha</testfx.version>
         <xaos.version>${project.version}</xaos.version>
     </properties>
@@ -33,7 +32,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.9.0</version>
                 <configuration>
                     <annotationProcessorPaths>
                         <path>
@@ -52,7 +51,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M3</version>
+                <version>3.0.0-M5</version>
                 <configuration>
                     <argLine>
                         --add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED --add-opens javafx.controls/javafx.scene.chart=xaos.ui.plot --add-opens xaos.ui.plot/eu.ess.xaos.ui.plot=javafx.fxml

@@ -1470,135 +1470,135 @@ public class IconsUITest extends ApplicationTest {
 		assertThat(Icons.iconFor(BLUR_OFF, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(MaterialDesign.MDI_BLUR_OFF.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(MaterialDesign.MDI_BLUR_OFF.getCode())));
 		assertThat(Icons.iconFor(CHEVRON_DOWN, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.CHEVRON_DOWN.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.CHEVRON_DOWN.getCode())));
 		assertThat(Icons.iconFor(CHEVRON_LEFT, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.CHEVRON_LEFT.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.CHEVRON_LEFT.getCode())));
 		assertThat(Icons.iconFor(CHEVRON_RIGHT, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.CHEVRON_RIGHT.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.CHEVRON_RIGHT.getCode())));
 		assertThat(Icons.iconFor(CHEVRON_UP, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.CHEVRON_UP.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.CHEVRON_UP.getCode())));
 		assertThat(Icons.iconFor(COPY, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.COPY.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.COPY.getCode())));
 		assertThat(Icons.iconFor(CUT, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.CUT.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.CUT.getCode())));
 		assertThat(Icons.iconFor(DELETE, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.REMOVE.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.REMOVE.getCode())));
 		assertThat(Icons.iconFor(FILE, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.FILE_O.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.FILE_O.getCode())));
 		assertThat(Icons.iconFor(FILE_EXECUTABLE, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.PLAY_CIRCLE_O.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.PLAY_CIRCLE_O.getCode())));
 		assertThat(Icons.iconFor(FILE_HIDDEN, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.FILE.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.FILE.getCode())));
 		assertThat(Icons.iconFor(FILE_IMAGE, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.FILE_IMAGE_O.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.FILE_IMAGE_O.getCode())));
 		assertThat(Icons.iconFor(FILE_LINK, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.LINK.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.LINK.getCode())));
 		assertThat(Icons.iconFor(FOLDER_COLLAPSED, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.FOLDER_O.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.FOLDER_O.getCode())));
 		assertThat(Icons.iconFor(FOLDER_EXPANDED, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.FOLDER_OPEN_O.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.FOLDER_OPEN_O.getCode())));
 		assertThat(Icons.iconFor(FORWARD, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.FORWARD.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.FORWARD.getCode())));
 		assertThat(Icons.iconFor(GEARS, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.GEARS.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.GEARS.getCode())));
 		assertThat(Icons.iconFor(INFO, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.INFO.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.INFO.getCode())));
 		assertThat(Icons.iconFor(PASTE, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.PASTE.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.PASTE.getCode())));
 		assertThat(Icons.iconFor(PIN, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.MAP_PIN.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.MAP_PIN.getCode())));
 		assertThat(Icons.iconFor(REPLY, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.REPLY.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.REPLY.getCode())));
 		assertThat(Icons.iconFor(REPLY_ALL, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.REPLY_ALL.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.REPLY_ALL.getCode())));
 		assertThat(Icons.iconFor(SEARCH, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.SEARCH.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.SEARCH.getCode())));
 		assertThat(Icons.iconFor(SHARE, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.SHARE.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.SHARE.getCode())));
 		assertThat(Icons.iconFor(SQUARE_DOWN, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.CARET_SQUARE_O_DOWN.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.CARET_SQUARE_O_DOWN.getCode())));
 		assertThat(Icons.iconFor(SQUARE_LEFT, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.CARET_SQUARE_O_LEFT.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.CARET_SQUARE_O_LEFT.getCode())));
 		assertThat(Icons.iconFor(SQUARE_RIGHT, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.CARET_SQUARE_O_RIGHT.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.CARET_SQUARE_O_RIGHT.getCode())));
 		assertThat(Icons.iconFor(SQUARE_UP, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.CARET_SQUARE_O_UP.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.CARET_SQUARE_O_UP.getCode())));
 		assertThat(Icons.iconFor(STATISTICS, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.SIGNAL.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.SIGNAL.getCode())));
 		assertThat(Icons.iconFor(TABLE, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.TABLE.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.TABLE.getCode())));
 		assertThat(Icons.iconFor(WARNING, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.WARNING.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.WARNING.getCode())));
 		assertThat(Icons.iconFor(ZOOM_IN, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.SEARCH_PLUS.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.SEARCH_PLUS.getCode())));
 		assertThat(Icons.iconFor(ZOOM_OUT, DEFAULT_SIZE))
 			.isNotNull()
 			.isInstanceOf(Text.class)
-			.hasFieldOrPropertyWithValue("text", String.valueOf(FontAwesome.SEARCH_MINUS.getCode()));
+			.hasFieldOrPropertyWithValue("text", new String(Character.toChars(FontAwesome.SEARCH_MINUS.getCode())));
 
 		assertThat(Icons.iconFor("txt", DEFAULT_SIZE)).isNull();
 		assertThat(Icons.iconFor(new Object(), DEFAULT_SIZE)).isNull();

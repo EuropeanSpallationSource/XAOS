@@ -17,7 +17,7 @@
     </description>
 
     <properties>
-        <javafx.version>11.0.2</javafx.version>
+        <javafx.version>17.0.2</javafx.version>
         <xaos.version>${project.version}</xaos.version>
     </properties>
 
@@ -27,7 +27,7 @@
              <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>3.2.2</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -46,7 +46,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
+                <version>3.0.0</version>
                 <configuration>
                     <mainClass>eu.ess.xaos.demos.simple.SimpleApplication</mainClass>
                 </configuration>
