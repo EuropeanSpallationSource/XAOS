@@ -24,7 +24,7 @@
         <commons-text.version>1.9</commons-text.version>
         <ikonli.version>12.3.0</ikonli.version>
         <javafx.version>17.0.2</javafx.version>
-        <testfx.version>4.0.16-alpha</testfx.version>
+        <testfx.version>4.0.15-alpha</testfx.version>
         <xaos.version>${project.version}</xaos.version>
     </properties>
 
