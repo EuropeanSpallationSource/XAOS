@@ -631,10 +631,10 @@ public class TreeDirectoryModelTest {
 		assertThat(modelRoot.getChildren()).size().isEqualTo(2);
 		assertThat(modelRoot.getChildren()).element(0)
 			.isInstanceOf(TreeDirectoryItems.TopLevelDirectoryItem.class)
-			.extracting("path").element(0).isEqualTo(dir_a);
+			.extracting("path").isEqualTo(dir_a);
 		assertThat(modelRoot.getChildren()).element(1)
 			.isInstanceOf(TreeDirectoryItems.TopLevelDirectoryItem.class)
-			.extracting("path").element(0).isEqualTo(dir_b);
+			.extracting("path").isEqualTo(dir_b);
 
 		model.dispose();
 
@@ -836,7 +836,7 @@ public class TreeDirectoryModelTest {
 
 		assertThat(item)
 			.isInstanceOf(TreeDirectoryItems.FileItem.class)
-			.extracting("lastModified").element(0).isEqualTo(lastModifiedTime1);
+			.extracting("lastModified").isEqualTo(lastModifiedTime1);
 
 		FileTime lastModifiedTime2 = from(lastModifiedTime1.toInstant().plusSeconds(123L));
 
@@ -846,7 +846,7 @@ public class TreeDirectoryModelTest {
 
 		assertThat(item)
 			.isInstanceOf(TreeDirectoryItems.FileItem.class)
-			.extracting("lastModified").element(0).isEqualTo(lastModifiedTime2);
+			.extracting("lastModified").isEqualTo(lastModifiedTime2);
 
 		model.dispose();
 
