@@ -31,25 +31,25 @@ compile:
       - xaos.ui.plot.module/target
     expire_in: 1 day
 
-test:
-  <<: *maven
-  stage: test
-  script:
-    - /bin/sh -c "xvfb-run -s '-screen 0 1280x1024x16' mvn --batch-mode test"
-  timeout: 5 minutes
-  artifacts:
-    paths:
-        - xaos.core.module/target/surefire-reports/TEST-*.xml
-        - xaos.tools.module/target/surefire-reports/TEST-*.xml
-        - xaos.ui.module/target/surefire-reports/TEST-*.xml
-        - xaos.tests.tools.module/target/surefire-reports/TEST-*.xml
-    reports:
-        junit:
-            - xaos.core.module/target/surefire-reports/TEST-*.xml
-            - xaos.tools.module/target/surefire-reports/TEST-*.xml
-            - xaos.ui.module/target/surefire-reports/TEST-*.xml
-            - xaos.tests.tools.module/target/surefire-reports/TEST-*.xml
-    
+#test:
+#  <<: *maven
+#  stage: test
+#  script:
+#    - /bin/sh -c "xvfb-run -s '-screen 0 1280x1024x16' mvn --batch-mode test"
+#  timeout: 5 minutes
+#  artifacts:
+#    paths:
+#        - xaos.core.module/target/surefire-reports/TEST-*.xml
+#        - xaos.tools.module/target/surefire-reports/TEST-*.xml
+#        - xaos.ui.module/target/surefire-reports/TEST-*.xml
+#        - xaos.tests.tools.module/target/surefire-reports/TEST-*.xml
+#    reports:
+#        junit:
+#            - xaos.core.module/target/surefire-reports/TEST-*.xml
+#            - xaos.tools.module/target/surefire-reports/TEST-*.xml
+#            - xaos.ui.module/target/surefire-reports/TEST-*.xml
+#            - xaos.tests.tools.module/target/surefire-reports/TEST-*.xml
+#    
 #sonar:
 #  stage: analyse
 #  <<: *maven
