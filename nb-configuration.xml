@@ -20,6 +20,6 @@ Any value defined here will override the pom.xml file value but is only applicab
 -->
         <netbeans.hint.licensePath>${project.basedir}/licenseheader.txt</netbeans.hint.licensePath>
         <netbeans.compile.on.save>all</netbeans.compile.on.save>
-        <netbeans.hint.jdkPlatform>JDK_12</netbeans.hint.jdkPlatform>
+        <netbeans.hint.jdkPlatform>Java_11__AdoptJDK_</netbeans.hint.jdkPlatform>
     </properties>
 </project-shared-configuration>
