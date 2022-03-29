@@ -176,10 +176,6 @@ public class PluggableChartContainer extends HiddenSidesPane {
 		tItems.add(makeSquare(pinButton, 22));
 
 		setTop(toolbar);
-                
-                  // Setting a larger trigger distance (default=16).
-                  setTriggerDistance(26.0);
-
 	}
 
 	/**
