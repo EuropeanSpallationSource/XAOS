@@ -16,7 +16,6 @@
  */
 package eu.ess.xaos.ui.plot;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -32,16 +31,16 @@ import eu.ess.xaos.core.util.LogUtils;
 import eu.ess.xaos.ui.plot.Legend.LegendItem;
 import eu.ess.xaos.ui.plot.plugins.Pluggable;
 import eu.ess.xaos.ui.plot.util.SeriesColorUtils;
+import eu.ess.xaos.ui.util.ColorUtils;
 import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.logging.Level.WARNING;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 
-
 /**
- * A thin extension of the FX {@link LineChart} supporting custom
- * {@link Plugin plugin} implementations.
+ * A thin extension of the FX {@link LineChart} supporting custom {@link Plugin plugin} implementations.
  *
  * @param <X> Type of X values.
  * @param <Y> Type of Y values.
@@ -50,346 +49,409 @@ import javafx.scene.paint.Color;
  */
 public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 
-	private static final Logger LOGGER = Logger.getLogger(LineChartFX.class.getName());
-        
-        private final Map<Integer,Color> colorMap = new HashMap<>();
+    private static final Logger LOGGER = Logger.getLogger(LineChartFX.class.getName());
 
-	/**
-	 * Quick way of creating a line chart showing the given {@code data}. X axis
-	 * will contain the index in the data point in the given list.
-	 *
-	 * @param data       The data list to be charted.
-	 * @param seriesName The name of the {@link Series} created from the given
-	 *                   {@code data}.
-	 * @return A {@link LineChartFX} chart.
-	 */
-	public static LineChartFX<Number, Number> of ( ObservableList<Double> data, String seriesName ) {
+    private final Map<Integer, Color> colorMap = new HashMap<>();
+    private final Map<Integer, Boolean> lineFlag = new HashMap<>();
+    private final Map<Integer, Boolean> markerFlag = new HashMap<>();
 
-		Series<Number, Number> dataSet = new Series<>();
+    /**
+     * Quick way of creating a line chart showing the given {@code data}. X axis will contain the index in the data
+     * point in the given list.
+     *
+     * @param data The data list to be charted.
+     * @param seriesName The name of the {@link Series} created from the given {@code data}.
+     * @return A {@link LineChartFX} chart.
+     */
+    public static LineChartFX<Number, Number> of(ObservableList<Double> data, String seriesName) {
+        Series<Number, Number> dataSet = new Series<>();
 
-		dataSet.setName(seriesName);
+        dataSet.setName(seriesName);
 
-		ObservableList<Data<Number, Number>> list = dataSet.getData();
+        ObservableList<Data<Number, Number>> list = dataSet.getData();
 
-		for ( int i = 0; i < data.size(); i++ ) {
-			list.add(new Data<>(i, data.get(i)));
-		}
-
-		return new LineChartFX<>(
-			new NumberAxis(),
-			new NumberAxis(),
-			FXCollections.singletonObservableList(dataSet)
-		);
-
-	}
-
-	private List<String> notShownInLegend;
-	private final Group pluginsNodesGroup = new Group();
-	private final PluginManager pluginManager = new PluginManager(this, pluginsNodesGroup);
-	private List<String> seriesDrawnInPlot;
-
-	/**
-	 * Construct a new line chart with the given axis and data.
-	 *
-	 * @param xAxis The x axis to use.
-	 * @param yAxis The y axis to use.
-	 * @see javafx.scene.chart.LineChart#LineChart(Axis, Axis)
-	 */
-	public LineChartFX( Axis<X> xAxis, Axis<Y> yAxis ) {
-		this(xAxis, yAxis, FXCollections.<Series<X, Y>>observableArrayList());
-	}
-
-	/**
-	 * Construct a new line chart with the given axis and data.
-	 *
-	 * @param xAxis The x axis to use.
-	 * @param yAxis The y axis to use.
-	 * @param data  The data to use, this is the actual list used so any
-	 *              changes to it will be reflected in the chart.
-	 * @see javafx.scene.chart.LineChart#LineChart(Axis, Axis, ObservableList)
-	 */
-	public LineChartFX( Axis<X> xAxis, Axis<Y> yAxis, ObservableList<Series<X, Y>> data ) {
-
-		super(xAxis, yAxis, data);
-                
-		getPlotChildren().add(pluginsNodesGroup);
-
-	}
-
-        @Override
-        public String getUserAgentStylesheet() {
-            return LineChartFX.class.getResource("/styles/chart.css").toExternalForm();
+        for (int i = 0; i < data.size(); i++) {
+            list.add(new Data<>(i, data.get(i)));
         }
 
-	/**
-	 * More robust method for adding plugins to chart.
-	 * <p>
-	 * <b>Note:</b> Only necessary if more than one plugin is being added at
-	 * once.</p>
-	 *
-	 * @param plugins List of {@link Plugin}s to be added.
-	 */
-	public void addChartPlugins( ObservableList<Plugin> plugins ) {
-		plugins.forEach(plugin -> {
-			try {
-				pluginManager.getPlugins().add(plugin);
-			} catch ( Exception ex ) {
-				LogUtils.log(
-					LOGGER,
-					WARNING,
-					"Error occured whilst adding {0} [{1}].",
-					plugin.getClass().getName(),
-					ex.getMessage()
-				);
-			}
-		});
+        return new LineChartFX<>(
+                new NumberAxis(),
+                new NumberAxis(),
+                FXCollections.singletonObservableList(dataSet)
+        );
+    }
 
-	}
+    private List<String> notShownInLegend;
+    private final Group pluginsNodesGroup = new Group();
+    private final PluginManager pluginManager = new PluginManager(this, pluginsNodesGroup);
+    private List<String> seriesDrawnInPlot;
 
-	@Override
-	public Chart getChart() {
-		return this;
-	}
+    /**
+     * Construct a new line chart with the given axis and data.
+     *
+     * @param xAxis The x axis to use.
+     * @param yAxis The y axis to use.
+     * @see javafx.scene.chart.LineChart#LineChart(Axis, Axis)
+     */
+    public LineChartFX(Axis<X> xAxis, Axis<Y> yAxis) {
+        this(xAxis, yAxis, FXCollections.<Series<X, Y>>observableArrayList());
+    }
 
-	@Override
-	public ObservableList<LegendItem> getLegendItems() {
+    /**
+     * Construct a new line chart with the given axis and data.
+     *
+     * @param xAxis The x axis to use.
+     * @param yAxis The y axis to use.
+     * @param data The data to use, this is the actual list used so any changes to it will be reflected in the chart.
+     * @see javafx.scene.chart.LineChart#LineChart(Axis, Axis, ObservableList)
+     */
+    public LineChartFX(Axis<X> xAxis, Axis<Y> yAxis, ObservableList<Series<X, Y>> data) {
+        super(xAxis, yAxis, data);
 
-		Node legend = getLegend();
+        getPlotChildren().add(pluginsNodesGroup);
+    }
 
-		if ( legend instanceof Legend ) {
-			return ( (Legend) legend ).getItems();
-		} else {
-			return FXCollections.emptyObservableList();
-		}
+    @Override
+    public String getUserAgentStylesheet() {
+        return LineChartFX.class.getResource("/styles/chart.css").toExternalForm();
+    }
 
-	}
+    /**
+     * More robust method for adding plugins to chart.
+     * <p>
+     * <b>Note:</b> Only necessary if more than one plugin is being added at once.</p>
+     *
+     * @param plugins List of {@link Plugin}s to be added.
+     */
+    public void addChartPlugins(ObservableList<Plugin> plugins) {
+        plugins.forEach(plugin -> {
+            try {
+                pluginManager.getPlugins().add(plugin);
+            } catch (Exception ex) {
+                LogUtils.log(
+                        LOGGER,
+                        WARNING,
+                        "Error occured whilst adding {0} [{1}].",
+                        plugin.getClass().getName(),
+                        ex.getMessage()
+                );
+            }
+        });
+    }
 
-	@Override
-	public final ObservableList<Node> getPlotChildren() {
-		return super.getPlotChildren();
-	}
+    @Override
+    public Chart getChart() {
+        return this;
+    }
 
-	@Override
-	public final ObservableList<Plugin> getPlugins() {
-		return pluginManager.getPlugins();
-	}
+    @Override
+    public ObservableList<LegendItem> getLegendItems() {
+        Node legend = getLegend();
 
-	@Override
-	public boolean isNotShownInLegend( String name ) {
-		return notShownInLegend().contains(name);
-	}
+        if (legend instanceof Legend) {
+            return ((Legend) legend).getItems();
+        } else {
+            return FXCollections.emptyObservableList();
+        }
+    }
 
-	public boolean isSeriesDrawn( String name ) {
-		return seriesDrawnInPlot().contains(name);
-	}
+    @Override
+    public final ObservableList<Node> getPlotChildren() {
+        return super.getPlotChildren();
+    }
 
-	/**
-	 * Sets which series has to be considered "horizontal", "vertical" and
-	 * "longitudinal". Special colors will be used to represent horizontal
-	 * (red), vertical (blue) and longitudinal (green) series.
-	 *
-	 * @param horizontal   Index of the horizontal series. Use -1 if no
-	 *                     horizontal series exists.
-	 * @param vertical     Index of the vertical series. Use -1 if no vertical
-	 *                     series exists.
-	 * @param longitudinal Index of the longitudinal series. Use -1 if no
-	 *                     longitudinal series exists.
-	 */
-	public final void setHVLSeries( int horizontal, int vertical, int longitudinal ) {
+    @Override
+    public final ObservableList<Plugin> getPlugins() {
+        return pluginManager.getPlugins();
+    }
 
-		int size = getData().size();
+    @Override
+    public boolean isNotShownInLegend(String name) {
+        return notShownInLegend().contains(name);
+    }
 
-		Validate.isTrue(horizontal < size, "Out of range 'horizontal' parameter.");
-		Validate.isTrue(vertical < size, "Out of range 'vertical' parameter.");
-		Validate.isTrue(longitudinal < size, "Out of range 'longitudinal' parameter.");
+    public boolean isSeriesDrawn(String name) {
+        return seriesDrawnInPlot().contains(name);
+    }
 
-		lookup(".chart").setStyle(SeriesColorUtils.styles(horizontal, vertical, longitudinal));
-                
-                colorMap.put(horizontal, SeriesColorUtils.HORIZONTAL);
-                colorMap.put(vertical, SeriesColorUtils.VERTICAL);
-                colorMap.put(longitudinal, SeriesColorUtils.LONGITUDINAL);
-	}
+    /**
+     * Sets which series has to be considered "horizontal", "vertical" and "longitudinal". Special colors will be used
+     * to represent horizontal (red), vertical (blue) and longitudinal (green) series.
+     *
+     * @param horizontal Index of the horizontal series. Use -1 if no horizontal series exists.
+     * @param vertical Index of the vertical series. Use -1 if no vertical series exists.
+     * @param longitudinal Index of the longitudinal series. Use -1 if no longitudinal series exists.
+     */
+    public final void setHVLSeries(int horizontal, int vertical, int longitudinal) {
+        int size = getData().size();
 
-	@Override
-	public final void setNotShownInLegend( String name ) {
-		notShownInLegend().add(name);
-		updateLegend();
-	}
+        Validate.isTrue(horizontal < size, "Out of range 'horizontal' parameter.");
+        Validate.isTrue(vertical < size, "Out of range 'vertical' parameter.");
+        Validate.isTrue(longitudinal < size, "Out of range 'longitudinal' parameter.");
+        if (horizontal != -1) {
+            colorMap.put(horizontal, SeriesColorUtils.HORIZONTAL);
+            setSeriesStyle(horizontal);
+        }
+        if (vertical != -1) {
+            colorMap.put(vertical, SeriesColorUtils.VERTICAL);
+            setSeriesStyle(vertical);
+        }
+        if (longitudinal != -1) {
+            colorMap.put(longitudinal, SeriesColorUtils.LONGITUDINAL);
+            setSeriesStyle(longitudinal);
+        }
+    }
 
-	@Override
-	protected void layoutPlotChildren() {
+    @Override
+    public final void setNotShownInLegend(String name) {
+        notShownInLegend().add(name);
+        updateLegend();
+    }
 
-		//	Layout plot children. This call will create fresh new symbols
-		//	that are by default visible.
-		super.layoutPlotChildren();
+    @Override
+    protected void layoutPlotChildren() {
 
-		//	If the track is hidden, then hide the symbols.
-		getData().stream()
-			.filter(series -> !seriesDrawnInPlot().contains(series.getName()))
-			.flatMap(series -> series.getData().stream())
-			.forEach(d -> {
-                                    if (d.getNode()!=null)
-                                        d.getNode().setVisible(false);});
+        //	Layout plot children. This call will create fresh new symbols
+        //	that are by default visible.
+        super.layoutPlotChildren();
 
-		//	Move plugins nodes to front.
-		ObservableList<Node> plotChildren = getPlotChildren();
+        //	Move plugins nodes to front.
+        ObservableList<Node> plotChildren = getPlotChildren();
 
-		plotChildren.remove(pluginsNodesGroup);
-		plotChildren.add(pluginsNodesGroup);
-                  
-                  // Required to update plugins properly.
-                  layout();
-	}
+        plotChildren.remove(pluginsNodesGroup);
+        plotChildren.add(pluginsNodesGroup);
 
-        /*
+        // Required to update plugins properly.
+        layout();
+    }
+
+    /*
         This method update the axis range taking into account only the visible lines.
-        */
-        @Override
-        protected void updateAxisRange() {
-            final Axis<X> xa = getXAxis();
-            final Axis<Y> ya = getYAxis();
-            List<X> xData = null;
-            List<Y> yData = null;
-            if (xa.isAutoRanging()) {
-                xData = new ArrayList<>();
-            }
-            if (ya.isAutoRanging()) {
-                yData = new ArrayList<>();
-            }
-            if (xData != null || yData != null) {
-                for (Series<X, Y> series : getData()) {
-                    if (seriesDrawnInPlot().contains(series.getName())) {
-                        for (Data<X, Y> data : series.getData()) {
-                            if (xData != null) {
-                                xData.add(data.getXValue());
-                            }
-                            if (yData != null) {
-                                yData.add(data.getYValue());
-                            }
+     */
+    @Override
+    protected void updateAxisRange() {
+        final Axis<X> xa = getXAxis();
+        final Axis<Y> ya = getYAxis();
+        List<X> xData = null;
+        List<Y> yData = null;
+        if (xa.isAutoRanging()) {
+            xData = new ArrayList<>();
+        }
+        if (ya.isAutoRanging()) {
+            yData = new ArrayList<>();
+        }
+        if (xData != null || yData != null) {
+            for (Series<X, Y> series : getData()) {
+                if (seriesDrawnInPlot().contains(series.getName())) {
+                    for (Data<X, Y> data : series.getData()) {
+                        if (xData != null) {
+                            xData.add(data.getXValue());
+                        }
+                        if (yData != null) {
+                            yData.add(data.getYValue());
                         }
                     }
                 }
-                if (xData != null) {
-                    xa.invalidateRange(xData);
-                }
-                if (yData != null) {
-                    ya.invalidateRange(yData);
-                }
+            }
+            if (xData != null) {
+                xa.invalidateRange(xData);
+            }
+            if (yData != null) {
+                ya.invalidateRange(yData);
             }
         }
+    }
 
-	@Override
-	protected void updateLegend() {
+    @Override
+    protected void updateLegend() {
+        final Legend legend = new Legend();
 
-		final Legend legend = new Legend();
+        seriesDrawnInPlot().clear();
 
-		seriesDrawnInPlot().clear();
+        for (int i = 0; i < getData().size(); i++) {
+            final int seriesIndex = i;
+            Series<X, Y> series = getData().get(seriesIndex);
+            String seriesName = series.getName();
 
-		for ( int i = 0; i < getData().size(); i++ ) {
+            if (!notShownInLegend().contains(seriesName)) {
+                Legend.LegendItem legenditem = new Legend.LegendItem(seriesName, selected -> {
+                    setSeriesStyle(seriesIndex, selected);
 
-			final int seriesIndex = i;
-			Series<X, Y> series = getData().get(seriesIndex);
-			String seriesName = series.getName();
-
-			if ( !notShownInLegend().contains(seriesName) ) {
-
-				Legend.LegendItem legenditem = new Legend.LegendItem(seriesName, selected -> {
-
-					series.getNode().setVisible(selected);
-                                            // Nodes for lines that aren't drawn are null.
-					series.getData().forEach(d -> {
-                                                if (d.getNode()!=null)
-                                                    d.getNode().setVisible(selected);});
-
-					if ( selected ) {
-						if ( !seriesDrawnInPlot().contains(seriesName) ) {
-							seriesDrawnInPlot().add(seriesName);
-						}
-					} else {
-						seriesDrawnInPlot().remove(seriesName);
-					}
-
-					getPlugins().forEach(p -> p.seriesVisibilityUpdated(this, series, seriesIndex, selected));
-                                        
-                                            updateAxisRange();
-
-				});
-
-				legenditem.getSymbol().getStyleClass().addAll(
-					"chart-line-symbol",
-					"area-legend-symbol",
-					"default-color" + ( seriesIndex % 8 ),
-					"series" + seriesIndex
-				);
-                                
-				seriesDrawnInPlot().add(seriesName);
-				legend.getItems().add(legenditem);
-
-                        } else {
-                            // Always include lines that are not shown in the legend
+                    if (selected) {
+                        if (!seriesDrawnInPlot().contains(seriesName)) {
                             seriesDrawnInPlot().add(seriesName);
                         }
-            }
+                    } else {
+                        seriesDrawnInPlot().remove(seriesName);
+                    }
 
-		setLegend(legend);
+                    getPlugins().forEach(p -> p.seriesVisibilityUpdated(this, series, seriesIndex, selected));
 
-	}
+                    updateAxisRange();
+                });
 
-	@SuppressWarnings( "ReturnOfCollectionOrArrayField" )
-	private List<String> notShownInLegend() {
+                legenditem.getSymbol().getStyleClass().addAll(
+                        "chart-line-symbol",
+                        "area-legend-symbol"
+                );
 
-		if ( notShownInLegend == null ) {
-			notShownInLegend = new ArrayList<>(4);
-		}
-
-		return notShownInLegend;
-
-	}
-
-	@SuppressWarnings( "ReturnOfCollectionOrArrayField" )
-	private List<String> seriesDrawnInPlot() {
-
-		if ( seriesDrawnInPlot == null ) {
-			seriesDrawnInPlot = new ArrayList<>(4);
-		}
-
-		return seriesDrawnInPlot;
-
-	}
-
-        public void setLineColor(String seriesName, Color color) {
-            for (Series<X, Y> series : getData()) {
-                if (series.getName().equals(seriesName)) {
-                    int index = getData().indexOf(series);
-                    colorMap.put(index, color);
-                    updateChartStyle();
-                    return;
+                String color;
+                if (colorMap.containsKey(i)) {
+                    color = ColorUtils.toWeb(colorMap.get(i));
+                } else {
+                    color = ColorUtils.toWeb(SeriesColorUtils.COLORS[i % 8]);
                 }
+                legenditem.getSymbol().setStyle("-fx-background-color: " + color + ", white;");
+
+                seriesDrawnInPlot().add(seriesName);
+                legend.getItems().add(legenditem);
+            } else {
+                // Always include lines that are not shown in the legend
+                seriesDrawnInPlot().add(seriesName);
+                setSeriesStyle(seriesIndex, true);
             }
         }
 
-        public void setDefaultLineColors() {
-            lookup(".chart").setStyle(SeriesColorUtils.styles());
-            colorMap.clear();
+        setLegend(legend);
+    }
+
+    @SuppressWarnings("ReturnOfCollectionOrArrayField")
+    private List<String> notShownInLegend() {
+        if (notShownInLegend == null) {
+            notShownInLegend = new ArrayList<>(4);
         }
-        
-        private void updateChartStyle(){
-            	int colorIndex = 0;
-		StringBuilder builder = new StringBuilder(360);
 
-		for ( int i = 0; i < 8; i++ ) {
-			if ( colorMap.containsKey(i) ) {
-				builder.append(SeriesColorUtils.styleFor(colorMap.get(i), i));
-			} else {
-				builder.append(SeriesColorUtils.styleFor(SeriesColorUtils.COLORS[colorIndex++], i));
-			}
+        return notShownInLegend;
+    }
 
-			if ( i < 7 ) {
-				builder.append(' ');
-			}
-
-		}
-                   
-                lookup(".chart").setStyle(builder.toString());     
+    @SuppressWarnings("ReturnOfCollectionOrArrayField")
+    private List<String> seriesDrawnInPlot() {
+        if (seriesDrawnInPlot == null) {
+            seriesDrawnInPlot = new ArrayList<>(4);
         }
+
+        return seriesDrawnInPlot;
+    }
+
+    private int getSeriesIndex(String seriesName) {
+        for (Series<X, Y> series : getData()) {
+            if (series.getName().equals(seriesName)) {
+                return getData().indexOf(series);
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Set the color used by a series
+     *      * 
+     * @param seriesName name of the series
+     * @param flag True to enable markers, False to disable
+     */
+    public void setSeriesColor(String seriesName, Color color) {
+        int index = getSeriesIndex(seriesName);
+        if (index != -1) {
+            colorMap.put(index, color);
+            setSeriesStyle(index);
+        }
+    }
+
+    /**
+     * Toggle display line option for the specified series and update the plot
+     * 
+     * By default, lines are shown in LineChartFX
+     * 
+     * @param seriesName name of the series
+     * @param flag True to enable line, False to disable
+     */
+    public void setShowLine(String seriesName, boolean flag) {
+        int index = getSeriesIndex(seriesName);
+        if (index != -1) {
+            lineFlag.put(index, flag);
+            setSeriesStyle(index);
+        }
+    }
+
+    /**
+     * Toggle display markers for the specified series and update the plot
+     * 
+     * By default, markers are not shown in LineChartFX
+     * 
+     * @param seriesName name of the series
+     * @param flag True to enable markers, False to disable
+     */
+    public void setShowMarker(String seriesName, boolean flag) {
+        int index = getSeriesIndex(seriesName);
+        if (index != -1) {
+            markerFlag.put(index, flag);
+            setSeriesStyle(index);
+        }
+    }
+
+    /**
+     * Replace default JavaFX colors by XAOS default colors
+     */
+    public void setDefaultLineColors() {
+        lookup(".chart").setStyle(SeriesColorUtils.styles());
+        colorMap.clear();
+    }
+
+    private void setSeriesStyle(int i) {
+        setSeriesStyle(i, true);
+    }
+
+    private void setSeriesStyle(int i, boolean shown) {
+        StringBuilder style = new StringBuilder();
+        String color;
+        if (colorMap.containsKey(i)) {
+            color = ColorUtils.toWeb(colorMap.get(i));
+        } else {
+            color = ColorUtils.toWeb(SeriesColorUtils.COLORS[i % 8]);
+        }
+
+        // Set line color
+        if (lineFlag.getOrDefault(i, Boolean.TRUE) && shown) {
+            style.append("-fx-stroke: ").append(color).append("; ");
+        } else {
+            style.append("-fx-stroke: transparent;");
+        }
+        // Set marker color
+        style.append("-fx-background-color: ").append(color).append(", white; ");
+
+        String lineStyle = style.toString();
+
+        String markerStyle;
+        if (markerFlag.getOrDefault(i, Boolean.FALSE) && shown) {
+            markerStyle = style.append("visibility: visible; ").toString();
+        } else {
+            markerStyle = style.append("visibility: hidden; ").toString();
+        }
+
+        // Update all nodes to use this style
+        for (Node n : lookupAll(".series" + i)) {
+            if (n instanceof Region) {
+                n.setStyle(markerStyle);
+            } else {
+                n.setStyle(lineStyle);
+            }
+        }
+
+        // Set color of the legend symbol
+        for (LegendItem legendItem : getLegendItems()) {
+            int index = getSeriesIndex(legendItem.getText());
+            if (index == i) {
+                legendItem.getSymbol().setStyle("-fx-background-color: " + color + ", white;");
+            }
+        }
+    }
+
+    /**
+     * Clear all the data in the plot and the styling
+     */
+    public void clear() {
+        getData().clear();
+        lineFlag.clear();
+        markerFlag.clear();
+        colorMap.clear();
+    }
 }
