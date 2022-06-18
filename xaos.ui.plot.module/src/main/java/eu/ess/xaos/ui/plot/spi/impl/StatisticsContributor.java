@@ -16,7 +16,6 @@
  */
 package eu.ess.xaos.ui.plot.spi.impl;
 
-
 import javafx.beans.binding.Bindings;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Control;
@@ -34,71 +33,57 @@ import eu.ess.xaos.ui.plot.spi.ToolbarContributor;
 import static org.controlsfx.control.PopOver.ArrowLocation.TOP_CENTER;
 import static eu.ess.xaos.ui.control.CommonIcons.STATISTICS;
 
-
 /**
- * A {@link ToolbarContributor} that shows statistics for the various chart
- * series.
+ * A {@link ToolbarContributor} that shows statistics for the various chart series.
  *
  * @author claudio.rosati@esss.se
  * @srvc.order 400
  */
-@ServiceProvider( service = ToolbarContributor.class, order = 400 )
+@ServiceProvider(service = ToolbarContributor.class, order = 400)
 public class StatisticsContributor implements ToolbarContributor {
 
-	@Override
-	@BundleItem( key = "button.tooltip", message = "Statistics" )
-	public Control provide( PluggableChartContainer chartContainer ) {
+    @Override
+    @BundleItem(key = "button.tooltip", message = "Statistics")
+    public Control provide(PluggableChartContainer chartContainer) {
+        ToggleButton button = new ToggleButton(null, Icons.iconFor(STATISTICS, 14));
 
-		ToggleButton button = new ToggleButton(null, Icons.iconFor(STATISTICS, 14));
+        button.setTooltip(new Tooltip(getString("button.tooltip")));
+        button.setOnAction(e -> handleButton(chartContainer, button));
+        button.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+            return chartContainer.getPluggable() == null
+                    || !(chartContainer.getPluggable().getChart() instanceof XYChart)
+                    || button.isSelected();
+        },
+                chartContainer.pluggableProperty(),
+                button.selectedProperty()
+        ));
 
-		button.setTooltip(new Tooltip(getString("button.tooltip")));
-		button.setOnAction(e -> handleButton(chartContainer, button));
-		button.disableProperty().bind(Bindings.createBooleanBinding(() -> {
-				return chartContainer.getPluggable() == null
-					|| !( chartContainer.getPluggable().getChart() instanceof XYChart )
-					|| button.isSelected();
-			},
-			chartContainer.pluggableProperty(),
-			button.selectedProperty()
-		));
+        return button;
+    }
 
-		return button;
+    private String getString(String key, Object... parameters) {
+        return Bundles.get(StatisticsContributor.class, key, parameters);
+    }
 
-	}
+    @BundleItems({
+        @BundleItem(key = "popOver.title", message = "Statistics")
+    })
+    private void handleButton(PluggableChartContainer chartContainer, ToggleButton button) {
+        StatisticsController controller = new StatisticsController(chartContainer.getPluggable());
+        PopOver popOver = new PopOver(controller);
 
-	private String getString( String key, Object... parameters ) {
-		return Bundles.get(StatisticsContributor.class, key, parameters);
-	}
+        popOver.setAnimated(false);
+        popOver.setCloseButtonEnabled(true);
+        popOver.setDetachable(true);
+        popOver.setHeaderAlwaysVisible(true);
+        popOver.setHideOnEscape(true);
+        popOver.setArrowLocation(TOP_CENTER);
+        popOver.setOnHidden(e -> {
+            controller.dispose();
+            button.setSelected(false);
+        });
+        popOver.setTitle(getString("popOver.title"));
 
-	@BundleItems({
-		@BundleItem( key = "popOver.title", message = "Statistics")
-	})
-	private void handleButton( PluggableChartContainer chartContainer, ToggleButton button ) {
-		
-		ToggleButton pinButton = chartContainer.getPinButton();
-
-		if ( !pinButton.isSelected() ) {
-			pinButton.fire();
-		}
-
-		StatisticsController controller = new StatisticsController(chartContainer.getPluggable());
-		PopOver popOver = new PopOver(controller);
-
-		popOver.setAnimated(false);
-		popOver.setCloseButtonEnabled(true);
-		popOver.setDetachable(true);
-		popOver.setHeaderAlwaysVisible(true);
-		popOver.setHideOnEscape(true);
-		popOver.setArrowLocation(TOP_CENTER);
-		popOver.setOnHidden(e -> {
-			controller.dispose();
-			button.setSelected(false);
-		});
-		popOver.setTitle(getString("popOver.title"));
-
-		popOver.show(button);
-
-
-	}
-
+        popOver.show(button);
+    }
 }

@@ -16,7 +16,6 @@
  */
 package eu.ess.xaos.ui.plot.spi.impl;
 
-
 import javafx.beans.binding.Bindings;
 import javafx.scene.Node;
 import javafx.scene.chart.Chart;
@@ -40,95 +39,79 @@ import eu.ess.xaos.ui.plot.spi.ToolbarContributor;
 import static org.controlsfx.control.PopOver.ArrowLocation.TOP_CENTER;
 import static eu.ess.xaos.ui.control.CommonIcons.BLUR_OFF;
 
-
 /**
- * A {@link ToolbarContributor} that allows to save a snapshot of the current
- * chart into an image file.
+ * A {@link ToolbarContributor} that allows to save a snapshot of the current chart into an image file.
  *
  * @author claudio.rosati@esss.se
  * @srvc.order 300
  */
-@ServiceProvider( service = ToolbarContributor.class, order = 300 )
-@SuppressWarnings( "ClassWithoutLogger" )
+@ServiceProvider(service = ToolbarContributor.class, order = 300)
+@SuppressWarnings("ClassWithoutLogger")
 public class FitContributor implements ToolbarContributor {
 
-	@Override
-	public boolean isPrecededBySeparator() {
-		return true;
-	}
+    @Override
+    public boolean isPrecededBySeparator() {
+        return true;
+    }
 
-	@Override
-	@BundleItem( key = "button.tooltip", message = "Fit Data" )
-	public Control provide( PluggableChartContainer chartContainer ) {
+    @Override
+    @BundleItem(key = "button.tooltip", message = "Fit Data")
+    public Control provide(PluggableChartContainer chartContainer) {
+        Node icon = Icons.iconFor(BLUR_OFF, 14);
 
-		Node icon = Icons.iconFor(BLUR_OFF, 14);
+        icon.setRotate(90);
 
-		icon.setRotate(90);
+        ToggleButton button = new ToggleButton(null, icon);
 
-		ToggleButton button = new ToggleButton(null, icon);
+        button.setTooltip(new Tooltip(getString("button.tooltip")));
+        button.setOnAction(e -> handleButton(chartContainer, button));
+        button.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+            Pluggable pluggable = chartContainer.getPluggable();
 
-		button.setTooltip(new Tooltip(getString("button.tooltip")));
-		button.setOnAction(e -> handleButton(chartContainer, button));
-		button.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+            if (pluggable == null) {
+                return true;
+            } else {
 
-				Pluggable pluggable = chartContainer.getPluggable();
+                Chart chart = pluggable.getChart();
 
-				if ( pluggable == null ) {
-					return true;
-				} else {
+                return !(chart instanceof XYChart)
+                        || (chart instanceof HistogramChartFX)
+                        || (chart instanceof ScatterChart)
+                        || !(((XYChart<?, ?>) chart).getXAxis() instanceof ValueAxis)
+                        || !(((XYChart<?, ?>) chart).getYAxis() instanceof ValueAxis)
+                        || button.isSelected();
+            }
+        },
+                chartContainer.pluggableProperty(),
+                button.selectedProperty()
+        ));
 
-					Chart chart = pluggable.getChart();
+        return button;
+    }
 
-					return !( chart instanceof XYChart )
-						|| ( chart instanceof HistogramChartFX )
-						|| ( chart instanceof ScatterChart )
-						|| !( ((XYChart<?, ?>) chart).getXAxis() instanceof ValueAxis )
-						|| !( ((XYChart<?, ?>) chart).getYAxis() instanceof ValueAxis )
-						|| button.isSelected();
+    private String getString(String key, Object... parameters) {
+        return Bundles.get(FitContributor.class, key, parameters);
+    }
 
-				}
+    @BundleItems({
+        @BundleItem(key = "popOver.title", message = "Fit Data")
+    })
+    private void handleButton(PluggableChartContainer chartContainer, ToggleButton button) {
+        FitController controller = new FitController(chartContainer.getPluggable());
+        PopOver popOver = new PopOver(controller);
 
-			},
-			chartContainer.pluggableProperty(),
-			button.selectedProperty()
-		));
+        popOver.setAnimated(false);
+        popOver.setCloseButtonEnabled(true);
+        popOver.setDetachable(true);
+        popOver.setHeaderAlwaysVisible(true);
+        popOver.setHideOnEscape(true);
+        popOver.setArrowLocation(TOP_CENTER);
+        popOver.setOnHidden(e -> {
+            controller.dispose();
+            button.setSelected(false);
+        });
+        popOver.setTitle(getString("popOver.title"));
 
-		return button;
-
-	}
-
-	private String getString( String key, Object... parameters ) {
-		return Bundles.get(FitContributor.class, key, parameters);
-	}
-
-	@BundleItems({
-		@BundleItem( key = "popOver.title", message = "Fit Data")
-	})
-	private void handleButton( PluggableChartContainer chartContainer, ToggleButton button ) {
-		
-		ToggleButton pinButton = chartContainer.getPinButton();
-
-		if ( !pinButton.isSelected() ) {
-			pinButton.fire();
-		}
-
-		FitController controller = new FitController(chartContainer.getPluggable());
-		PopOver popOver = new PopOver(controller);
-
-		popOver.setAnimated(false);
-		popOver.setCloseButtonEnabled(true);
-		popOver.setDetachable(true);
-		popOver.setHeaderAlwaysVisible(true);
-		popOver.setHideOnEscape(true);
-		popOver.setArrowLocation(TOP_CENTER);
-		popOver.setOnHidden(e -> {
-			controller.dispose();
-			button.setSelected(false);
-		});
-		popOver.setTitle(getString("popOver.title"));
-
-		popOver.show(button);
-
-	}
-
+        popOver.show(button);
+    }
 }

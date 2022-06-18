@@ -16,7 +16,6 @@
  */
 package eu.ess.xaos.ui.plot.spi.impl;
 
-
 import javafx.beans.binding.Bindings;
 import javafx.scene.control.Control;
 import javafx.scene.control.ToggleButton;
@@ -32,64 +31,52 @@ import eu.ess.xaos.ui.plot.spi.ToolbarContributor;
 import static org.controlsfx.control.PopOver.ArrowLocation.TOP_CENTER;
 import static eu.ess.xaos.ui.control.CommonIcons.GEARS;
 
-
 /**
  * A {@link ToolbarContributor} that allows to edit chart axes properties.
  *
  * @author claudio.rosati@esss.se
  * @srvc.order 500
  */
-@ServiceProvider( service = ToolbarContributor.class, order = 500 )
+@ServiceProvider(service = ToolbarContributor.class, order = 500)
 public class AxisPropertiesContributor implements ToolbarContributor {
 
-	@Override
-	@BundleItem( key = "button.tooltip", message = "Axes Properties" )
-	public Control provide( PluggableChartContainer chartContainer ) {
+    @Override
+    @BundleItem(key = "button.tooltip", message = "Axes Properties")
+    public Control provide(PluggableChartContainer chartContainer) {
+        ToggleButton button = new ToggleButton(null, Icons.iconFor(GEARS, 14));
 
-		ToggleButton button = new ToggleButton(null, Icons.iconFor(GEARS, 14));
+        button.setTooltip(new Tooltip(getString("button.tooltip")));
+        button.setOnAction(e -> handleButton(chartContainer, button));
+        button.disableProperty().bind(Bindings.or(
+                Bindings.isNull(chartContainer.pluggableProperty()),
+                button.selectedProperty()
+        ));
 
-		button.setTooltip(new Tooltip(getString("button.tooltip")));
-		button.setOnAction(e -> handleButton(chartContainer, button));
-		button.disableProperty().bind(Bindings.or(
-			Bindings.isNull(chartContainer.pluggableProperty()),
-			button.selectedProperty()
-		));
+        return button;
 
-		return button;
+    }
 
-	}
+    private String getString(String key, Object... parameters) {
+        return Bundles.get(AxisPropertiesContributor.class, key, parameters);
+    }
 
-	private String getString( String key, Object... parameters ) {
-		return Bundles.get(AxisPropertiesContributor.class, key, parameters);
-	}
+    @BundleItem(key = "popOver.title", message = "Axes Properties")
+    private void handleButton(PluggableChartContainer chartContainer, ToggleButton button) {
+        AxisPropertiesController controller = new AxisPropertiesController(chartContainer.getPluggable());
+        PopOver popOver = new PopOver(controller);
 
-	@BundleItem( key = "popOver.title", message = "Axes Properties")
-	private void handleButton( PluggableChartContainer chartContainer, ToggleButton button ) {
-		
-		ToggleButton pinButton = chartContainer.getPinButton();
+        popOver.setAnimated(false);
+        popOver.setCloseButtonEnabled(true);
+        popOver.setDetachable(true);
+        popOver.setHeaderAlwaysVisible(true);
+        popOver.setArrowLocation(TOP_CENTER);
+        popOver.setOnShown(e -> popOver.getContentNode().requestFocus());
+        popOver.setOnHidden(e -> {
+            controller.dispose();
+            button.setSelected(false);
+        });
+        popOver.setTitle(getString("popOver.title"));
 
-		if ( !pinButton.isSelected() ) {
-			pinButton.fire();
-		}
-
-		AxisPropertiesController controller = new AxisPropertiesController(chartContainer.getPluggable());
-		PopOver popOver = new PopOver(controller);
-
-		popOver.setAnimated(false);
-		popOver.setCloseButtonEnabled(true);
-		popOver.setDetachable(true);
-		popOver.setHeaderAlwaysVisible(true);
-		popOver.setArrowLocation(TOP_CENTER);
-		popOver.setOnShown(e -> popOver.getContentNode().requestFocus());
-		popOver.setOnHidden(e -> {
-			controller.dispose();
-			button.setSelected(false);
-		});
-		popOver.setTitle(getString("popOver.title"));
-
-		popOver.show(button);
-
-
-	}
-
+        popOver.show(button);
+    }
 }
