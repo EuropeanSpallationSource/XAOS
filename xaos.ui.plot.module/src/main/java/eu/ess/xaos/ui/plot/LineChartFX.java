@@ -54,6 +54,20 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
     private final Map<Integer, Color> colorMap = new HashMap<>();
     private final Map<Integer, Boolean> lineFlag = new HashMap<>();
     private final Map<Integer, Boolean> markerFlag = new HashMap<>();
+    private final Map<Integer, LineStyle> lineStyleMap = new HashMap<>();
+
+    public enum LineStyle {
+        SOLID(""), DASHED("10 10"), DOTTED("2 4"), DASHDOT("6 10 2 10");
+        private String style;
+
+        private LineStyle(String style) {
+            this.style = style;
+        }
+
+        public String getStyle() {
+            return style;
+        }
+    };
 
     /**
      * Quick way of creating a line chart showing the given {@code data}. X axis will contain the index in the data
@@ -343,9 +357,8 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
     }
 
     /**
-     * Set the color used by a series
-     *      * 
-     * @param seriesName name of the series
+     * Set the color used by a series * @param seriesName name of the series
+     *
      * @param flag True to enable markers, False to disable
      */
     public void setSeriesColor(String seriesName, Color color) {
@@ -358,9 +371,9 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 
     /**
      * Toggle display line option for the specified series and update the plot
-     * 
+     *
      * By default, lines are shown in LineChartFX
-     * 
+     *
      * @param seriesName name of the series
      * @param flag True to enable line, False to disable
      */
@@ -372,11 +385,19 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
         }
     }
 
+    public void setLineStyle(String seriesName, LineStyle style) {
+        int index = getSeriesIndex(seriesName);
+        if (index != -1) {
+            lineStyleMap.put(index, style);
+            setSeriesStyle(index);
+        }
+    }
+
     /**
      * Toggle display markers for the specified series and update the plot
-     * 
+     *
      * By default, markers are not shown in LineChartFX
-     * 
+     *
      * @param seriesName name of the series
      * @param flag True to enable markers, False to disable
      */
@@ -418,7 +439,12 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
         // Set marker color
         style.append("-fx-background-color: ").append(color).append(", white; ");
 
-        String lineStyle = style.toString();
+        String lineStyle;
+        if (lineStyleMap.getOrDefault(i, LineStyle.SOLID) == LineStyle.SOLID) {
+            lineStyle = style.toString();
+        } else {
+            lineStyle = style.append("-fx-stroke-dash-array: ").append(lineStyleMap.get(i).getStyle()).append("; ").toString();
+        }
 
         String markerStyle;
         if (markerFlag.getOrDefault(i, Boolean.FALSE) && shown) {
