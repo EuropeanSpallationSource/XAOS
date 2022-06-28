@@ -35,10 +35,13 @@ import javafx.scene.layout.TilePane;
 
 import static javafx.geometry.Orientation.HORIZONTAL;
 import static javafx.geometry.Orientation.VERTICAL;
+import javafx.scene.layout.StackPane;
+import javafx.scene.shape.HLineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 
 /**
- * A chart legend that displays a list of items with symbols in a
- * {@link TilePane}.
+ * A chart legend that displays a list of items with symbols in a {@link TilePane}.
  *
  * @author claudio.rosati@esss.se
  */
@@ -63,7 +66,7 @@ public class Legend extends TilePane {
      ************************************************************************
      */
 
-    /*
+ /*
      * ---- items --------------------------------------------------------------
      */
     private final ObjectProperty<ObservableList<LegendItem>> items = new SimpleObjectProperty<>(this, "items") {
@@ -120,8 +123,7 @@ public class Legend extends TilePane {
     };
 
     /**
-     * @return Whether legend items should be laid out vertically in columns
-     * rather than horizontally in rows.
+     * @return Whether legend items should be laid out vertically in columns rather than horizontally in rows.
      */
     public final BooleanProperty verticalProperty() {
         return vertical;
@@ -166,32 +168,31 @@ public class Legend extends TilePane {
     /**
      * A item to be displayed on a Legend.
      * <p>
-     * It is realized by a {@link CheckBox} whose text is the series name, and
-     * its color is the series one.</p>
+     * It is realized by a {@link CheckBox} whose text is the series name, and its color is the series one.</p>
      *
      * @css.class {@code chart-legend-item} for the legend text.
-     * @css.class {@code chart-legend-item-symbol} It should be defined if a
-     * special default symbol is wanted. If defined it will take precedence of
-     * the others.
-     * @css.class {@code chart-symbol}, {@code default-color1.chart-symbol},
-     * {@code default-color2.chart-symbol}, {@code default-color3.chart-symbol},
-     * {@code default-color4.chart-symbol}, {@code default-color5.chart-symbol},
-     * {@code default-color6.chart-symbol} and
-     * {@code default-color6.chart-symbol} for scatter charts.
+     * @css.class {@code chart-legend-item-symbol} It should be defined if a special default symbol is wanted. If
+     * defined it will take precedence of the others.
+     * @css.class {@code chart-symbol}, {@code default-color1.chart-symbol}, {@code default-color2.chart-symbol},
+     * {@code default-color3.chart-symbol}, {@code default-color4.chart-symbol}, {@code default-color5.chart-symbol},
+     * {@code default-color6.chart-symbol} and {@code default-color6.chart-symbol} for scatter charts.
      * @css.class {@code chart-line-symbol} for line charts.
-     * @css.class {@code chart-area-symbol} and {@code area-legend-symbol} for
-     * area charts.
+     * @css.class {@code chart-area-symbol} and {@code area-legend-symbol} for area charts.
      * @css.class {@code bubble-legend-symbol} for bubble charts.
      * @css.class {@code bar-legend-symbol} for bar charts.
      */
     @SuppressWarnings("PublicInnerClass")
     public static class LegendItem {
 
+        private static final double WIDTH = 10.;
+        private static final double HEIGHT = 10.;
+
         /**
          * CheckBox used to represent the legend item.
          */
         @SuppressWarnings("PackageVisibleField")
         final CheckBox checkBox = new CheckBox();
+        final StackPane pane = new StackPane();
 
         /*
          *********************************************************************
@@ -199,7 +200,7 @@ public class Legend extends TilePane {
 	* *******************************************************************
          */
 
-         /*
+ /*
 	 * ---- symbol ---------------------------------------------------------
          */
         private final ObjectProperty<Node> symbol = new SimpleObjectProperty<>(LegendItem.this, "symbol", new Region()) {
@@ -212,14 +213,44 @@ public class Legend extends TilePane {
                     symbol.getStyleClass().setAll("chart-legend-item-symbol");
                 }
 
-                checkBox.setGraphic(symbol);
+                updatePane();
+
+                checkBox.setGraphic(pane);
 
             }
         };
 
+        /*
+	 * ---- line ---------------------------------------------------------
+         */
+        private final ObjectProperty<Node> line;
+
         /**
-         * @return The symbol to use next to the item text, set to {@code null}
-         * for no symbol. The default is a simple circle.
+         * Adds the symbol and line to a StackPane to show them when available. The symbol is on top of the line.
+         */
+        private void updatePane() {
+            if (line.get() != null) {
+                if (!pane.getChildren().contains(line.get())) {
+                    pane.getChildren().add(line.get());
+                }
+            } else {
+                if (pane.getChildren().contains(line.get())) {
+                    pane.getChildren().remove(line.get());
+                }
+            }
+            if (symbol.get() != null) {
+                if (!pane.getChildren().contains(symbol.get())) {
+                    pane.getChildren().add(symbol.get());
+                }
+            } else {
+                if (pane.getChildren().contains(symbol.get())) {
+                    pane.getChildren().remove(symbol.get());
+                }
+            }
+        }
+
+        /**
+         * @return The symbol to use next to the item text, set to {@code null} for no symbol. The default is no symbol.
          */
         public final ObjectProperty<Node> symbolProperty() {
             return symbol;
@@ -231,6 +262,21 @@ public class Legend extends TilePane {
 
         public final void setSymbol(Node value) {
             symbol.setValue(value);
+        }
+
+        /**
+         * @return The line to use next to the item text, set to {@code null} for no line. The default is a solid line.
+         */
+        public final ObjectProperty<Node> lineProperty() {
+            return line;
+        }
+
+        public final Node getLine() {
+            return line.getValue();
+        }
+
+        public final void setLine(Node value) {
+            line.setValue(value);
         }
 
         /*
@@ -265,13 +311,46 @@ public class Legend extends TilePane {
 	* END OF JAVAFX PROPERTIES                                          *
 	* *******************************************************************
          */
-
         public LegendItem(String text, Consumer<Boolean> checkBoxSelectionHandler) {
+            Path segment = new Path();
+
+            MoveTo moveTo = new MoveTo();
+            moveTo.setX(0.0f);
+            moveTo.setY(0.0f);
+
+            HLineTo hLineTo = new HLineTo();
+            hLineTo.setX(20.0f);
+
+            segment.getElements().add(moveTo);
+            segment.getElements().add(hLineTo);
+
+            line = new SimpleObjectProperty<>(LegendItem.this, "line", segment) {
+                @Override
+                protected void invalidated() {
+
+                    Node line = get();
+
+                    if (line != null) {
+                        line.getStyleClass().setAll("chart-series-line");
+                    }
+
+                    updatePane();
+
+                    checkBox.setGraphic(pane);
+
+                }
+            };
+
+            ((Region) symbol.get()).setMinSize(WIDTH, HEIGHT);
+            ((Region) symbol.get()).setPrefSize(WIDTH, HEIGHT);
+            ((Region) symbol.get()).setMaxSize(WIDTH, HEIGHT);
+
+            updatePane();
 
             checkBox.getStyleClass().add("chart-legend-item");
             checkBox.setAlignment(Pos.CENTER_LEFT);
             checkBox.setContentDisplay(ContentDisplay.LEFT);
-            checkBox.setGraphic(getSymbol());
+            checkBox.setGraphic(pane);
             checkBox.setId("legend-check-box: " + text);
             checkBox.setSelected(true);
             checkBox.selectedProperty().addListener((ob, ov, nv) -> {
@@ -281,6 +360,7 @@ public class Legend extends TilePane {
             });
 
             getSymbol().getStyleClass().setAll("chart-legend-item-symbol");
+            getLine().getStyleClass().setAll("chart-series-line");
             setText(text);
 
         }

@@ -30,12 +30,15 @@ import org.apache.commons.lang3.Validate;
 import eu.ess.xaos.core.util.LogUtils;
 import eu.ess.xaos.ui.plot.Legend.LegendItem;
 import eu.ess.xaos.ui.plot.plugins.Pluggable;
+import eu.ess.xaos.ui.plot.util.LineStyle;
+import eu.ess.xaos.ui.plot.util.MarkerSymbol;
 import eu.ess.xaos.ui.plot.util.SeriesColorUtils;
 import eu.ess.xaos.ui.util.ColorUtils;
 import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.logging.Level.WARNING;
+import javafx.collections.ListChangeListener.Change;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 
@@ -56,42 +59,6 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
     private final Map<Integer, Boolean> markerFlag = new HashMap<>();
     private final Map<Integer, LineStyle> lineStyleMap = new HashMap<>();
     private final Map<Integer, MarkerSymbol> markerSymbolMap = new HashMap<>();
-
-    public enum LineStyle {
-        SOLID(""), DASHED("10 10"), DOTTED("2 3"), DASHDOT("6 10 2 10");
-        private String style;
-
-        private LineStyle(String style) {
-            this.style = style;
-        }
-
-        public String getStyle() {
-            return style;
-        }
-    };
-
-    public enum MarkerSymbol {
-        SOLID_CIRCLE("-fx-background-radius: 5px; -fx-padding: 5px; "),
-        SOLID_SQUARE("-fx-background-radius: 0; "),
-        SOLID_DIAMOND("-fx-background-radius: 0; -fx-padding: 7px 5px 7px 5px; -fx-shape: \"M5,0 L10,9 L5,18 L0,9 Z\"; "),
-        SOLID_TRIANGLE("-fx-background-radius: 0; -fx-background-insets: 0; -fx-shape: \"M5,0 L10,8 L0,8 Z\"; "),
-        CROSS("-fx-background-radius: 0; -fx-background-insets: 0;\n"
-                + " -fx-shape: \"M2,0 L5,4 L8,0 L10,0 L10,2 L6,5 L10,8 L10,10 L8,10 L5,6 L2,10 L0,10 L0,8 L4,5 L0,2 L0,0 Z\"; "),
-        HOLLOW_CIRCLE("-fx-background-insets: 0, 2; -fx-background-radius: 5px; -fx-padding: 5px; "),
-        HOLLOW_SQUARE("-fx-background-insets: 0, 2; -fx-background-radius: 0; "),
-        HOLLOW_DIAMOND("-fx-background-radius: 0; -fx-background-insets: 0, 2.5; -fx-padding: 7px 5px 7px 5px; -fx-shape: \"M5,0 L10,9 L5,18 L0,9 Z\"; "),
-        HOLLOW_TRIANGLE("-fx-background-radius: 0; -fx-background-insets: 0, 2.5; -fx-shape: \"M5,0 L10,8 L0,8 Z\"; ");
-
-        private String style;
-
-        private MarkerSymbol(String style) {
-            this.style = style;
-        }
-
-        public String getStyle() {
-            return style;
-        }
-    }
 
     /**
      * Quick way of creating a line chart showing the given {@code data}. X axis will contain the index in the data
@@ -248,7 +215,6 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 
     @Override
     protected void layoutPlotChildren() {
-
         //	Layout plot children. This call will create fresh new symbols
         //	that are by default visible.
         super.layoutPlotChildren();
@@ -261,6 +227,21 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 
         // Required to update plugins properly.
         layout();
+    }
+
+    /**
+     * Make sure the series is assigned the right style when added.
+     *
+     * @param c
+     */
+    @Override
+    protected void seriesChanged(Change<? extends Series> c) {
+        super.seriesChanged(c);
+        
+        for (Series series : c.getList()) {
+            int index = getSeriesIndex(series.getName());
+            setSeriesStyle(index);
+        }
     }
 
     /*
@@ -333,24 +314,20 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
                         "area-legend-symbol"
                 );
 
-                String color;
-                if (colorMap.containsKey(i)) {
-                    color = ColorUtils.toWeb(colorMap.get(i));
-                } else {
-                    color = ColorUtils.toWeb(SeriesColorUtils.COLORS[i % 8]);
-                }
-                legenditem.getSymbol().setStyle("-fx-background-color: " + color + ", white;");
-
                 seriesDrawnInPlot().add(seriesName);
                 legend.getItems().add(legenditem);
             } else {
                 // Always include lines that are not shown in the legend
                 seriesDrawnInPlot().add(seriesName);
-                setSeriesStyle(seriesIndex, true);
             }
         }
 
         setLegend(legend);
+
+        // Set the legend symbol style after setting the Legend, since getLegend() is used to get the items.
+        for (int i = 0; i < getData().size(); i++) {
+            setLegendItemStyle(i);
+        }
     }
 
     @SuppressWarnings("ReturnOfCollectionOrArrayField")
@@ -449,25 +426,68 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
         colorMap.clear();
     }
 
+    private String getColorFor(int i) {
+        if (colorMap.containsKey(i)) {
+            return ColorUtils.toWeb(colorMap.get(i));
+        } else {
+            return ColorUtils.toWeb(SeriesColorUtils.COLORS[i % 8]);
+        }
+    }
+
+    private void setLegendItemStyle(int i) {
+        // Set color of the legend symbol
+        for (LegendItem legendItem : getLegendItems()) {
+            int index = getSeriesIndex(legendItem.getText());
+            if (index == i) {
+                legendItem.getSymbol().setStyle(getMarkerStyle(i, true));
+                legendItem.getLine().setStyle(getLineStyle(i, true));
+            }
+        }
+    }
+
     private void setSeriesStyle(int i) {
         setSeriesStyle(i, true);
     }
 
     private void setSeriesStyle(int i, boolean shown) {
-        StringBuilder style = new StringBuilder();
-        String color;
-        if (colorMap.containsKey(i)) {
-            color = ColorUtils.toWeb(colorMap.get(i));
-        } else {
-            color = ColorUtils.toWeb(SeriesColorUtils.COLORS[i % 8]);
+        String lineStyle = getLineStyle(i, shown);
+        String markerStyle = getMarkerStyle(i, shown);
+
+        // Update all nodes to use this style
+        for (Node n : lookupAll(".series" + i)) {
+            if (n instanceof Region) {
+                n.setStyle(markerStyle);
+            } else {
+                n.setStyle(lineStyle);
+            }
         }
 
+        setLegendItemStyle(i);
+    }
+
+    private String getLineStyle(int i, boolean shown) {
+        StringBuilder style = new StringBuilder();
+
+        String color = getColorFor(i);
         // Set line color
         if (lineFlag.getOrDefault(i, Boolean.TRUE) && shown) {
             style.append("-fx-stroke: ").append(color).append("; ");
         } else {
-            style.append("-fx-stroke: transparent; ");
+            return style.append("-fx-stroke: transparent; ").toString();
         }
+
+        style.append("-fx-background-color: ").append(color).append("; ");
+        if (lineStyleMap.getOrDefault(i, LineStyle.SOLID) != LineStyle.SOLID) {
+            style.append("-fx-stroke-dash-array: ").append(lineStyleMap.get(i).getStyle()).append("; ");
+        }
+        return style.toString();
+    }
+
+    private String getMarkerStyle(int i, boolean shown) {
+        StringBuilder style = new StringBuilder();
+
+        String color = getColorFor(i);
+
         // Set marker color
         style.append("-fx-background-color: ").append(color);
 
@@ -484,36 +504,13 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
                 style.append(", white; ");
         }
 
-        String lineStyle = style.toString();
-        if (lineStyleMap.getOrDefault(i, LineStyle.SOLID) != LineStyle.SOLID) {
-            lineStyle += "-fx-stroke-dash-array: " + lineStyleMap.get(i).getStyle() + "; ";
-        }
-
-        String markerStyle;
         if (markerFlag.getOrDefault(i, Boolean.FALSE) && shown) {
-            markerStyle = style.append("visibility: visible; ").toString();
+            style.append("visibility: visible; ");
         } else {
-            markerStyle = style.append("visibility: hidden; ").toString();
+            style.append("visibility: hidden; ");
         }
 
-        markerStyle += marker.getStyle();
-
-        // Update all nodes to use this style
-        for (Node n : lookupAll(".series" + i)) {
-            if (n instanceof Region) {
-                n.setStyle(markerStyle);
-            } else {
-                n.setStyle(lineStyle);
-            }
-        }
-
-        // Set color of the legend symbol
-        for (LegendItem legendItem : getLegendItems()) {
-            int index = getSeriesIndex(legendItem.getText());
-            if (index == i) {
-                legendItem.getSymbol().setStyle("-fx-background-color: " + color + ", white;");
-            }
-        }
+        return style.append(marker.getStyle()).toString();
     }
 
     /**
