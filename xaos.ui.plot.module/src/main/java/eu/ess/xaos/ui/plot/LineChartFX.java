@@ -55,9 +55,10 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
     private final Map<Integer, Boolean> lineFlag = new HashMap<>();
     private final Map<Integer, Boolean> markerFlag = new HashMap<>();
     private final Map<Integer, LineStyle> lineStyleMap = new HashMap<>();
+    private final Map<Integer, MarkerSymbol> markerSymbolMap = new HashMap<>();
 
     public enum LineStyle {
-        SOLID(""), DASHED("10 10"), DOTTED("2 4"), DASHDOT("6 10 2 10");
+        SOLID(""), DASHED("10 10"), DOTTED("2 3"), DASHDOT("6 10 2 10");
         private String style;
 
         private LineStyle(String style) {
@@ -68,6 +69,29 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
             return style;
         }
     };
+
+    public enum MarkerSymbol {
+        SOLID_CIRCLE("-fx-background-radius: 5px; -fx-padding: 5px; "),
+        SOLID_SQUARE("-fx-background-radius: 0; "),
+        SOLID_DIAMOND("-fx-background-radius: 0; -fx-padding: 7px 5px 7px 5px; -fx-shape: \"M5,0 L10,9 L5,18 L0,9 Z\"; "),
+        SOLID_TRIANGLE("-fx-background-radius: 0; -fx-background-insets: 0; -fx-shape: \"M5,0 L10,8 L0,8 Z\"; "),
+        CROSS("-fx-background-radius: 0; -fx-background-insets: 0;\n"
+                + " -fx-shape: \"M2,0 L5,4 L8,0 L10,0 L10,2 L6,5 L10,8 L10,10 L8,10 L5,6 L2,10 L0,10 L0,8 L4,5 L0,2 L0,0 Z\"; "),
+        HOLLOW_CIRCLE("-fx-background-insets: 0, 2; -fx-background-radius: 5px; -fx-padding: 5px; "),
+        HOLLOW_SQUARE("-fx-background-insets: 0, 2; -fx-background-radius: 0; "),
+        HOLLOW_DIAMOND("-fx-background-radius: 0; -fx-background-insets: 0, 2.5; -fx-padding: 7px 5px 7px 5px; -fx-shape: \"M5,0 L10,9 L5,18 L0,9 Z\"; "),
+        HOLLOW_TRIANGLE("-fx-background-radius: 0; -fx-background-insets: 0, 2.5; -fx-shape: \"M5,0 L10,8 L0,8 Z\"; ");
+
+        private String style;
+
+        private MarkerSymbol(String style) {
+            this.style = style;
+        }
+
+        public String getStyle() {
+            return style;
+        }
+    }
 
     /**
      * Quick way of creating a line chart showing the given {@code data}. X axis will contain the index in the data
@@ -409,6 +433,14 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
         }
     }
 
+    public void setMarkerSymbol(String seriesName, MarkerSymbol symbol) {
+        int index = getSeriesIndex(seriesName);
+        if (index != -1) {
+            markerSymbolMap.put(index, symbol);
+            setSeriesStyle(index);
+        }
+    }
+
     /**
      * Replace default JavaFX colors by XAOS default colors
      */
@@ -434,16 +466,27 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
         if (lineFlag.getOrDefault(i, Boolean.TRUE) && shown) {
             style.append("-fx-stroke: ").append(color).append("; ");
         } else {
-            style.append("-fx-stroke: transparent;");
+            style.append("-fx-stroke: transparent; ");
         }
         // Set marker color
-        style.append("-fx-background-color: ").append(color).append(", white; ");
+        style.append("-fx-background-color: ").append(color);
 
-        String lineStyle;
-        if (lineStyleMap.getOrDefault(i, LineStyle.SOLID) == LineStyle.SOLID) {
-            lineStyle = style.toString();
-        } else {
-            lineStyle = style.append("-fx-stroke-dash-array: ").append(lineStyleMap.get(i).getStyle()).append("; ").toString();
+        MarkerSymbol marker = markerSymbolMap.getOrDefault(i, MarkerSymbol.HOLLOW_CIRCLE);
+        switch (marker) {
+            case SOLID_CIRCLE:
+            case SOLID_SQUARE:
+            case SOLID_DIAMOND:
+            case SOLID_TRIANGLE:
+            case CROSS:
+                style.append("; ");
+                break;
+            default:
+                style.append(", white; ");
+        }
+
+        String lineStyle = style.toString();
+        if (lineStyleMap.getOrDefault(i, LineStyle.SOLID) != LineStyle.SOLID) {
+            lineStyle += "-fx-stroke-dash-array: " + lineStyleMap.get(i).getStyle() + "; ";
         }
 
         String markerStyle;
@@ -452,6 +495,8 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
         } else {
             markerStyle = style.append("visibility: hidden; ").toString();
         }
+
+        markerStyle += marker.getStyle();
 
         // Update all nodes to use this style
         for (Node n : lookupAll(".series" + i)) {
