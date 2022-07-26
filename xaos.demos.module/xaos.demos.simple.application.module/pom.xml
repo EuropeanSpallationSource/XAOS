@@ -6,7 +6,7 @@
     <parent>
         <groupId>eu.ess</groupId>
         <artifactId>xaos.demos</artifactId>
-        <version>0.10</version>
+        <version>0.11-SNAPSHOT</version>
     </parent>
 
     <artifactId>xaos.demos.simple.application</artifactId>
