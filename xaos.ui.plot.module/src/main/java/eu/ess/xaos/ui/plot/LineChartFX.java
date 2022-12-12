@@ -43,7 +43,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 
 /**
- * A thin extension of the FX {@link LineChart} supporting custom {@link Plugin plugin} implementations.
+ * A thin extension of the FX {@link LineChart} supporting custom
+ * {@link Plugin plugin} implementations.
  *
  * @param <X> Type of X values.
  * @param <Y> Type of Y values.
@@ -60,12 +61,16 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
     private final Map<Integer, LineStyle> lineStyleMap = new HashMap<>();
     private final Map<Integer, MarkerSymbol> markerSymbolMap = new HashMap<>();
 
+    // General flag to enable/disable plotting markers
+    private boolean showMarkersFlag = false;
+
     /**
-     * Quick way of creating a line chart showing the given {@code data}. X axis will contain the index in the data
-     * point in the given list.
+     * Quick way of creating a line chart showing the given {@code data}. X axis
+     * will contain the index in the data point in the given list.
      *
      * @param data The data list to be charted.
-     * @param seriesName The name of the {@link Series} created from the given {@code data}.
+     * @param seriesName The name of the {@link Series} created from the given
+     * {@code data}.
      * @return A {@link LineChartFX} chart.
      */
     public static LineChartFX<Number, Number> of(ObservableList<Double> data, String seriesName) {
@@ -107,7 +112,8 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
      *
      * @param xAxis The x axis to use.
      * @param yAxis The y axis to use.
-     * @param data The data to use, this is the actual list used so any changes to it will be reflected in the chart.
+     * @param data The data to use, this is the actual list used so any changes
+     * to it will be reflected in the chart.
      * @see javafx.scene.chart.LineChart#LineChart(Axis, Axis, ObservableList)
      */
     public LineChartFX(Axis<X> xAxis, Axis<Y> yAxis, ObservableList<Series<X, Y>> data) {
@@ -124,7 +130,8 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
     /**
      * More robust method for adding plugins to chart.
      * <p>
-     * <b>Note:</b> Only necessary if more than one plugin is being added at once.</p>
+     * <b>Note:</b> Only necessary if more than one plugin is being added at
+     * once.</p>
      *
      * @param plugins List of {@link Plugin}s to be added.
      */
@@ -180,12 +187,16 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
     }
 
     /**
-     * Sets which series has to be considered "horizontal", "vertical" and "longitudinal". Special colors will be used
-     * to represent horizontal (red), vertical (blue) and longitudinal (green) series.
+     * Sets which series has to be considered "horizontal", "vertical" and
+     * "longitudinal". Special colors will be used to represent horizontal
+     * (red), vertical (blue) and longitudinal (green) series.
      *
-     * @param horizontal Index of the horizontal series. Use -1 if no horizontal series exists.
-     * @param vertical Index of the vertical series. Use -1 if no vertical series exists.
-     * @param longitudinal Index of the longitudinal series. Use -1 if no longitudinal series exists.
+     * @param horizontal Index of the horizontal series. Use -1 if no horizontal
+     * series exists.
+     * @param vertical Index of the vertical series. Use -1 if no vertical
+     * series exists.
+     * @param longitudinal Index of the longitudinal series. Use -1 if no
+     * longitudinal series exists.
      */
     public final void setHVLSeries(int horizontal, int vertical, int longitudinal) {
         int size = getData().size();
@@ -219,6 +230,11 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
         //	that are by default visible.
         super.layoutPlotChildren();
 
+        // Make sure all lines and markers have the right style
+        for (int i = 0; i < getData().size(); i++) {
+            setSeriesStyle(i, isSeriesDrawn(getData().get(i).getName()));
+        }
+        
         //	Move plugins nodes to front.
         ObservableList<Node> plotChildren = getPlotChildren();
 
@@ -237,10 +253,10 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
     @Override
     protected void seriesChanged(Change<? extends Series> c) {
         super.seriesChanged(c);
-        
+
         for (Series series : c.getList()) {
             int index = getSeriesIndex(series.getName());
-            setSeriesStyle(index);
+            setSeriesStyle(index, isSeriesDrawn(series.getName()));
         }
     }
 
@@ -358,9 +374,10 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
     }
 
     /**
-     * Set the color used by a series * @param seriesName name of the series
+     * Set the color used by a series
      *
-     * @param flag True to enable markers, False to disable
+     * @param seriesName name of the series
+     * @param color
      */
     public void setSeriesColor(String seriesName, Color color) {
         int index = getSeriesIndex(seriesName);
@@ -408,6 +425,27 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
             markerFlag.put(index, flag);
             setSeriesStyle(index);
         }
+    }
+
+    /**
+     * Set the flag to enable/disable showing symbols on the plot. Use this
+     * method instead of setCreateSymbols because the create Symbols flags must
+     * always be enabled in this chart. Enabling/disabling symbols is done by
+     * CSS styling.
+     *
+     * @param flag
+     */
+    public void setShowMarkers(boolean flag) {
+        showMarkersFlag = flag;
+    }
+
+    /**
+     * Get the flag to enable/disable showing symbols on the plot.
+     *
+     * @return
+     */
+    public boolean getShowMarkers() {
+        return showMarkersFlag;
     }
 
     public void setMarkerSymbol(String seriesName, MarkerSymbol symbol) {
@@ -504,7 +542,7 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
                 style.append(", white; ");
         }
 
-        if (markerFlag.getOrDefault(i, Boolean.FALSE) && shown) {
+        if (markerFlag.getOrDefault(i, getShowMarkers()) && shown) {
             style.append("visibility: visible; ");
         } else {
             style.append("visibility: hidden; ");
