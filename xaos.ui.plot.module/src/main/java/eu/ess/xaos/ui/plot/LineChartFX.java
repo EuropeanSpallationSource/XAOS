@@ -234,7 +234,7 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
         for (int i = 0; i < getData().size(); i++) {
             setSeriesStyle(i, isSeriesDrawn(getData().get(i).getName()));
         }
-        
+
         //	Move plugins nodes to front.
         ObservableList<Node> plotChildren = getPlotChildren();
 
@@ -255,7 +255,7 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
         super.seriesChanged(c);
 
         for (Series series : c.getList()) {
-            int index = getSeriesIndex(series.getName());
+            int index = getSeriesIndex(series.hashCode());
             setSeriesStyle(index, isSeriesDrawn(series.getName()));
         }
     }
@@ -308,7 +308,7 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
             Series<X, Y> series = getData().get(seriesIndex);
             String seriesName = series.getName();
 
-            if (!notShownInLegend().contains(seriesName)) {
+            if (!notShownInLegend().contains(seriesName) && seriesName != null) {
                 Legend.LegendItem legenditem = new Legend.LegendItem(seriesName, selected -> {
                     setSeriesStyle(seriesIndex, selected);
 
@@ -342,7 +342,11 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 
         // Set the legend symbol style after setting the Legend, since getLegend() is used to get the items.
         for (int i = 0; i < getData().size(); i++) {
-            setLegendItemStyle(i);
+            Series<X, Y> series = getData().get(i);
+            String seriesName = series.getName();
+            if (!notShownInLegend().contains(seriesName)) {
+                setLegendItemStyle(i);
+            }
         }
     }
 
@@ -363,10 +367,20 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 
         return seriesDrawnInPlot;
     }
+    
 
     private int getSeriesIndex(String seriesName) {
         for (Series<X, Y> series : getData()) {
             if (series.getName().equals(seriesName)) {
+                return getData().indexOf(series);
+            }
+        }
+        return -1;
+    }
+
+    private int getSeriesIndex(int seriesHash) {
+        for (Series<X, Y> series : getData()) {
+            if (series.hashCode() == seriesHash) {
                 return getData().indexOf(series);
             }
         }
