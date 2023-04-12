@@ -39,7 +39,6 @@ import java.util.Map;
 
 import static java.util.logging.Level.WARNING;
 import javafx.collections.ListChangeListener.Change;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 
 /**
@@ -63,6 +62,9 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 
     // General flag to enable/disable plotting markers
     private boolean showMarkersFlag = false;
+
+    // Width for all lines in the plot
+    private float linesWidth = 1.3f;
 
     /**
      * Quick way of creating a line chart showing the given {@code data}. X axis
@@ -94,7 +96,7 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
     private List<String> notShownInLegend;
     private final Group pluginsNodesGroup = new Group();
     private final PluginManager pluginManager = new PluginManager(this, pluginsNodesGroup);
-    private List<String> seriesDrawnInPlot;
+    private final Map<String, Boolean> seriesDrawnInPlot = new HashMap<>();
 
     /**
      * Construct a new line chart with the given axis and data.
@@ -118,6 +120,10 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
      */
     public LineChartFX(Axis<X> xAxis, Axis<Y> yAxis, ObservableList<Series<X, Y>> data) {
         super(xAxis, yAxis, data);
+
+        for (Series<X, Y> series : data) {
+            seriesDrawnInPlot.put(series.getName(), true);
+        }
 
         getPlotChildren().add(pluginsNodesGroup);
     }
@@ -183,7 +189,20 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
     }
 
     public boolean isSeriesDrawn(String name) {
-        return seriesDrawnInPlot().contains(name);
+        return seriesDrawnInPlot.getOrDefault(name, false);
+    }
+
+    public void setSeriesDrawn(String name, boolean flag) {
+        seriesDrawnInPlot.put(name, flag);
+
+        // Make sure the legend items show the correct state
+        if (!isNotShownInLegend(name)) {
+            for (LegendItem item : getLegendItems()) {
+                if (name.equals(item.getText())) {
+                    item.setSelected(flag);
+                }
+            }
+        }
     }
 
     /**
@@ -232,7 +251,7 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 
         // Make sure all lines and markers have the right style
         for (int i = 0; i < getData().size(); i++) {
-            setSeriesStyle(i, isSeriesDrawn(getData().get(i).getName()));
+            setSeriesStyle(i);
         }
 
         //	Move plugins nodes to front.
@@ -246,17 +265,26 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
     }
 
     /**
-     * Make sure the series is assigned the right style when added.
+     * Make sure the series is assigned the right style when added. Also make
+     * sure to use setSeriesDrawn if you want to make sure the plot is not
+     * plotted.
      *
      * @param c
      */
     @Override
     protected void seriesChanged(Change<? extends Series> c) {
-        super.seriesChanged(c);
+        // Parent method not called because we do styling differently here.
 
-        for (Series series : c.getList()) {
-            int index = getSeriesIndex(series.hashCode());
-            setSeriesStyle(index, isSeriesDrawn(series.getName()));
+        for (Series removedSeries : c.getRemoved()) {
+            seriesDrawnInPlot.remove(removedSeries.getName());
+        }
+
+        for (Series<Number, Number> series : c.getAddedSubList()) {
+            if (!seriesDrawnInPlot.containsKey(series.getName())) {
+                setSeriesDrawn(series.getName(), true);
+            }
+
+            updateSeriesStyle(series);
         }
     }
 
@@ -277,7 +305,7 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
         }
         if (xData != null || yData != null) {
             for (Series<X, Y> series : getData()) {
-                if (seriesDrawnInPlot().contains(series.getName())) {
+                if (isSeriesDrawn(series.getName())) {
                     for (Data<X, Y> data : series.getData()) {
                         if (xData != null) {
                             xData.add(data.getXValue());
@@ -301,40 +329,27 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
     protected void updateLegend() {
         final Legend legend = new Legend();
 
-        seriesDrawnInPlot().clear();
-
         for (int i = 0; i < getData().size(); i++) {
             final int seriesIndex = i;
-            Series<X, Y> series = getData().get(seriesIndex);
+            Series series = getData().get(seriesIndex);
             String seriesName = series.getName();
 
             if (!notShownInLegend().contains(seriesName) && seriesName != null) {
                 Legend.LegendItem legenditem = new Legend.LegendItem(seriesName, selected -> {
-                    setSeriesStyle(seriesIndex, selected);
-
-                    if (selected) {
-                        if (!seriesDrawnInPlot().contains(seriesName)) {
-                            seriesDrawnInPlot().add(seriesName);
-                        }
-                    } else {
-                        seriesDrawnInPlot().remove(seriesName);
-                    }
+                    seriesDrawnInPlot.put(seriesName, selected);
+                    updateSeriesStyle(series);
 
                     getPlugins().forEach(p -> p.seriesVisibilityUpdated(this, series, seriesIndex, selected));
 
                     updateAxisRange();
-                });
+                }, isSeriesDrawn(seriesName));
 
                 legenditem.getSymbol().getStyleClass().addAll(
                         "chart-line-symbol",
                         "area-legend-symbol"
                 );
 
-                seriesDrawnInPlot().add(seriesName);
                 legend.getItems().add(legenditem);
-            } else {
-                // Always include lines that are not shown in the legend
-                seriesDrawnInPlot().add(seriesName);
             }
         }
 
@@ -345,7 +360,7 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
             Series<X, Y> series = getData().get(i);
             String seriesName = series.getName();
             if (!notShownInLegend().contains(seriesName)) {
-                setLegendItemStyle(i);
+                setLegendItemStyle(seriesName);
             }
         }
     }
@@ -358,16 +373,6 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 
         return notShownInLegend;
     }
-
-    @SuppressWarnings("ReturnOfCollectionOrArrayField")
-    private List<String> seriesDrawnInPlot() {
-        if (seriesDrawnInPlot == null) {
-            seriesDrawnInPlot = new ArrayList<>(4);
-        }
-
-        return seriesDrawnInPlot;
-    }
-    
 
     private int getSeriesIndex(String seriesName) {
         for (Series<X, Y> series : getData()) {
@@ -390,14 +395,14 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
     /**
      * Set the color used by a series
      *
-     * @param seriesName name of the series
+     * @param series the series
      * @param color
      */
-    public void setSeriesColor(String seriesName, Color color) {
-        int index = getSeriesIndex(seriesName);
+    public void setSeriesColor(Series series, Color color) {
+        int index = getSeriesIndex(series.getName());
         if (index != -1) {
             colorMap.put(index, color);
-            setSeriesStyle(index);
+            updateSeriesStyle(series);
         }
     }
 
@@ -406,22 +411,26 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
      *
      * By default, lines are shown in LineChartFX
      *
-     * @param seriesName name of the series
+     * @param series the series
      * @param flag True to enable line, False to disable
      */
-    public void setShowLine(String seriesName, boolean flag) {
-        int index = getSeriesIndex(seriesName);
+    public void setShowLine(Series series, boolean flag) {
+        int index = getSeriesIndex(series.getName());
         if (index != -1) {
             lineFlag.put(index, flag);
-            setSeriesStyle(index);
+            updateSeriesStyle(series);
         }
     }
 
-    public void setLineStyle(String seriesName, LineStyle style) {
-        int index = getSeriesIndex(seriesName);
+    public void setLinesWidth(float width) {
+        linesWidth = width;
+    }
+
+    public void setLineStyle(Series series, LineStyle style) {
+        int index = getSeriesIndex(series.getName());
         if (index != -1) {
             lineStyleMap.put(index, style);
-            setSeriesStyle(index);
+            updateSeriesStyle(series);
         }
     }
 
@@ -430,14 +439,14 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
      *
      * By default, markers are not shown in LineChartFX
      *
-     * @param seriesName name of the series
+     * @param series the series
      * @param flag True to enable markers, False to disable
      */
-    public void setShowMarker(String seriesName, boolean flag) {
-        int index = getSeriesIndex(seriesName);
+    public void setShowMarker(Series series, boolean flag) {
+        int index = getSeriesIndex(series.getName());
         if (index != -1) {
             markerFlag.put(index, flag);
-            setSeriesStyle(index);
+            updateSeriesStyle(series);
         }
     }
 
@@ -462,11 +471,11 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
         return showMarkersFlag;
     }
 
-    public void setMarkerSymbol(String seriesName, MarkerSymbol symbol) {
-        int index = getSeriesIndex(seriesName);
+    public void setMarkerSymbol(Series series, MarkerSymbol symbol) {
+        int index = getSeriesIndex(series.getName());
         if (index != -1) {
             markerSymbolMap.put(index, symbol);
-            setSeriesStyle(index);
+            updateSeriesStyle(series);
         }
     }
 
@@ -486,35 +495,42 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
         }
     }
 
-    private void setLegendItemStyle(int i) {
+    private void setLegendItemStyle(String name) {
         // Set color of the legend symbol
         for (LegendItem legendItem : getLegendItems()) {
-            int index = getSeriesIndex(legendItem.getText());
-            if (index == i) {
-                legendItem.getSymbol().setStyle(getMarkerStyle(i, true));
-                legendItem.getLine().setStyle(getLineStyle(i, true));
+            if (name.equals(legendItem.getText())) {
+                int index = getSeriesIndex(name);
+                legendItem.getSymbol().setStyle(getMarkerStyle(index, true));
+                legendItem.getLine().setStyle(getLineStyle(index, true));
             }
         }
     }
 
     private void setSeriesStyle(int i) {
-        setSeriesStyle(i, true);
+        Series s = getData().get(i);
+        updateSeriesStyle(s);
     }
 
-    private void setSeriesStyle(int i, boolean shown) {
-        String lineStyle = getLineStyle(i, shown);
-        String markerStyle = getMarkerStyle(i, shown);
+    private void updateSeriesStyle(Series<Number, Number> series) {
+        boolean shown = isSeriesDrawn(series.getName());
+        int index = getSeriesIndex(series.hashCode());
+
+        String lineStyle = getLineStyle(index, shown);
+        String markerStyle = getMarkerStyle(index, shown);
 
         // Update all nodes to use this style
-        for (Node n : lookupAll(".series" + i)) {
-            if (n instanceof Region) {
-                n.setStyle(markerStyle);
-            } else {
-                n.setStyle(lineStyle);
+        Node seriesNode = series.getNode();
+        if (seriesNode != null) {
+            seriesNode.setStyle(lineStyle);
+        }
+        for (int j = 0; j < series.getData().size(); j++) {
+            final Node symbol = series.getData().get(j).getNode();
+            if (symbol != null) {
+                symbol.setStyle(markerStyle);
             }
         }
 
-        setLegendItemStyle(i);
+        setLegendItemStyle(series.getName());
     }
 
     private String getLineStyle(int i, boolean shown) {
@@ -532,6 +548,9 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
         if (lineStyleMap.getOrDefault(i, LineStyle.SOLID) != LineStyle.SOLID) {
             style.append("-fx-stroke-dash-array: ").append(lineStyleMap.get(i).getStyle()).append("; ");
         }
+
+        style.append("-fx-stroke-width: ").append(Float.toString(linesWidth)).append("px; -fx-effect: null;");
+
         return style.toString();
     }
 

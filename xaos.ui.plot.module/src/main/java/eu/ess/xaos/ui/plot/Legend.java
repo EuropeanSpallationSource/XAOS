@@ -312,6 +312,10 @@ public class Legend extends TilePane {
 	* *******************************************************************
          */
         public LegendItem(String text, Consumer<Boolean> checkBoxSelectionHandler) {
+            this(text, checkBoxSelectionHandler, true);
+        }
+        
+        public LegendItem(String text, Consumer<Boolean> checkBoxSelectionHandler, boolean selected) {
             Path segment = new Path();
 
             MoveTo moveTo = new MoveTo();
@@ -352,7 +356,7 @@ public class Legend extends TilePane {
             checkBox.setContentDisplay(ContentDisplay.LEFT);
             checkBox.setGraphic(pane);
             checkBox.setId("legend-check-box: " + text);
-            checkBox.setSelected(true);
+            checkBox.setSelected(selected);
             checkBox.selectedProperty().addListener((ob, ov, nv) -> {
                 if (checkBoxSelectionHandler != null) {
                     checkBoxSelectionHandler.accept(nv);
