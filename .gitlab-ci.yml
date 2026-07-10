@@ -3,7 +3,7 @@ variables:
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
 
 .maven: &maven
-  image: registry.esss.lu.se/ics-docker/maven:openjdk-11
+  image: maven:3.9-eclipse-temurin-25
   tags:
     - docker
 
@@ -77,6 +77,6 @@ publish:
   stage: publish
   <<: *maven
   script:
-    - mvn --batch-mode -Dxaos.headless=true -DskipTests=true -Dartifactory.username='${ARTIFACTORY_USERNAME}' -Dartifactory.password='${ARTIFACTORY_PASSWORD}' clean deploy
+    - mvn --batch-mode -DskipTests=true -Dartifactory.username='${ARTIFACTORY_USERNAME}' -Dartifactory.password='${ARTIFACTORY_PASSWORD}' clean deploy
   only:
     - master

@@ -16,9 +16,9 @@ controls and tools for building gauges, meters, knobs, etc.
 
 ```maven
 <dependency>
-  <groupId>se.europeanspallationsource</groupId>
+  <groupId>eu.ess</groupId>
   <artifactId>xaos.ui.gauge</artifactId>
-  <version>0.5.0-SNAPSHOT</version>
+  <version>0.13-SNAPSHOT</version>
   <scope>compile</scope>
 </dependency>
 ```

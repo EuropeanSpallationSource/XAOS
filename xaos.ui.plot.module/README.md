@@ -16,9 +16,9 @@ tools for plotting data into a graph.
 
 ```maven
 <dependency>
-  <groupId>se.europeanspallationsource</groupId>
+  <groupId>eu.ess</groupId>
   <artifactId>xaos.ui.plot</artifactId>
-  <version>0.5.0-SNAPSHOT</version>
+  <version>0.13-SNAPSHOT</version>
   <scope>compile</scope>
 </dependency>
 ```

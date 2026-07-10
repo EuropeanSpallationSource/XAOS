@@ -618,14 +618,28 @@ public class DensityChartFX<X, Y> extends Chart implements Pluggable {
 		return zAxis;
 	}
 
+	/**
+	 * The legend of a density chart is a Z-value colour scale, never a list of
+	 * series: {@link #getLegendItems()} is always empty. No series is therefore
+	 * ever shown in it.
+	 *
+	 * @param seriesName The name of the series to be checked.
+	 * @return Always {@code true}.
+	 */
 	@Override
 	public boolean isNotShownInLegend( String seriesName ) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		return true;
 	}
 
+	/**
+	 * No-op: no series is ever shown in a density chart's colour-scale legend.
+	 *
+	 * @param seriesName The name of the series to not be shown in the legend.
+	 * @see #isNotShownInLegend(String)
+	 */
 	@Override
 	public void setNotShownInLegend( String seriesName ) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		//	Nothing to do.
 	}
 
 	@Override
@@ -1420,9 +1434,18 @@ public class DensityChartFX<X, Y> extends Chart implements Pluggable {
 			return yValues[yIndex];
 		}
 
+		/**
+		 * Projection data carries X and Y coordinates only, and has no Z
+		 * surface to sample.
+		 *
+		 * @param xIndex Index of the X coordinate.
+		 * @param yIndex Index of the Y coordinate.
+		 * @return Never returns.
+		 * @throws UnsupportedOperationException Always.
+		 */
 		@Override
 		public double getZValue( int xIndex, int yIndex ) {
-			throw new UnsupportedOperationException("Not supported yet.");
+			throw new UnsupportedOperationException("ProjectionData carries no Z values.");
 		}
 
 		/**

@@ -64,8 +64,8 @@ import javafx.scene.layout.VBox;
  * A container for {@link XYChart}s where tool-bar is displayed when the mouse cursor is close to the top border. Once
  * the tool-bar is displayed it can be pinned.
  * <p>
- * <b>Note:</b> The {@link #setContent(javafx.scene.Node)} should never be used, preferring
- * {@link #setPluggable(Pluggable)} instead.</p>
+ * <b>Note:</b> The chart must be installed with {@link #setPluggable(Pluggable)},
+ * not by adding it directly to this container's children.</p>
  *
  * @author claudio.rosati@esss.se
  * @css.class {@code chart-container-toolbar}

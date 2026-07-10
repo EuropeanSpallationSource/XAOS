@@ -18,8 +18,7 @@
     </description>
 
     <properties>
-        <!-- Dependencies Versions -->
-        <javafx.version>17.0.2</javafx.version>
+        <!-- Dependencies Versions (javafx.version inherited from parent) -->
         <xaos.version>${project.version}</xaos.version>
     </properties>
 

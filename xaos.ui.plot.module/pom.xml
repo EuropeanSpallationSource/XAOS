@@ -18,11 +18,10 @@
 
     <properties>
         <!-- Dependencies Versions -->
-        <commons-lang3.version>3.12.0</commons-lang3.version>
+        <commons-lang3.version>3.20.0</commons-lang3.version>
         <commons-math3.version>3.6.1</commons-math3.version>
-        <controlsfx.version>11.1.1</controlsfx.version>
-        <javafx.version>18</javafx.version>
-        <testfx.version>4.0.16-alpha</testfx.version>
+        <controlsfx.version>11.2.3</controlsfx.version>
+        <testfx.version>4.0.18</testfx.version>
         <xaos.version>${project.version}</xaos.version>
     </properties>
 
@@ -32,7 +31,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.9.0</version>
+                <version>3.15.0</version>
                 <configuration>
                     <annotationProcessorPaths>
                         <path>
@@ -51,7 +50,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version>
+                <version>3.5.6</version>
                 <configuration>
                     <argLine>
                         --add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED --add-opens javafx.controls/javafx.scene.chart=xaos.ui.plot --add-opens xaos.ui.plot/eu.ess.xaos.ui.plot=javafx.fxml
@@ -164,6 +163,17 @@
             <artifactId>testfx-core</artifactId>
             <version>${testfx.version}</version>
             <scope>test</scope>
+            <exclusions>
+                <!--
+                    Unused by TestFX, but its presence on the class-path makes
+                    ikonli-core take its OSGi code path and fail with an
+                    IllegalAccessError (it cannot read the unnamed module).
+                -->
+                <exclusion>
+                    <groupId>org.osgi</groupId>
+                    <artifactId>org.osgi.core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.testfx</groupId>

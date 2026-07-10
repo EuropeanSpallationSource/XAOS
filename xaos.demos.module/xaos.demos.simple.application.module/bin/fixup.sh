@@ -14,10 +14,19 @@ MAIN_JAR="${TARGET_PATH}/$1"
 DOC_PATH=./doc
 
 
-# Remove all test dependencies...
-rm -v "${MODS_PATH}/assertj-core-3.11.1.jar"
-rm -v "${MODS_PATH}/hamcrest-core-1.3.jar"
-rm -v "${MODS_PATH}/junit-4.12.jar"
+# Test dependencies are already kept out of "mods" by the copy-dependencies
+# "includeScope" setting in the parent POM.
+
+
+# Remove the empty, platform-less OpenJFX marker JARs. They carry no classes,
+# so the module system reads them as automatic modules whose names clash with
+# the real platform-specific ones (e.g. javafx-graphics-<v>-mac-aarch64.jar).
+for jar in "${MODS_PATH}"/javafx-*.jar "${MODS_PATH}"/jdk-jsobject-*.jar; do
+  [ -e "${jar}" ] || continue
+  if [ "$(unzip -l "${jar}" | grep -c '\.class$')" -eq 0 ]; then
+    rm -v "${jar}"
+  fi
+done
 
 
 # Move non-module JARs into the class path...

@@ -269,7 +269,14 @@ public class ThreadPools {
 	}
 
 	private static void registerShutdownHook() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+		if ( WAS_REGISTERED.compareAndSet(false, true) ) {
+			Runtime.getRuntime().addShutdownHook(new Thread(
+				ThreadPools::shutdown,
+				"XAOS ThreadPools shutdown hook"
+			));
+		}
+
 	}
 
 	/**

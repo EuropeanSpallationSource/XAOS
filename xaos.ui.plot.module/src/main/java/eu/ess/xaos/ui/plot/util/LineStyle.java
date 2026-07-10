@@ -19,7 +19,7 @@ package eu.ess.xaos.ui.plot.util;
 /**
  * Predefined line styles.
  *
- * @author Juan F. Esteban Müller <JuanF.EstebanMuller@ess.eu>
+ * @author Juan F. Esteban Müller &lt;JuanF.EstebanMuller@ess.eu&gt;
  */
 public enum LineStyle {
     SOLID(""),

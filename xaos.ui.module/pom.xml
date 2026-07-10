@@ -19,12 +19,12 @@
 
     <properties>
         <!-- Dependencies Versions -->
-        <classgraph.version>4.8.138</classgraph.version>
-        <commons-lang3.version>3.12.0</commons-lang3.version>
-        <commons-text.version>1.9</commons-text.version>
-        <ikonli.version>12.3.0</ikonli.version>
-        <javafx.version>18</javafx.version>
-        <testfx.version>4.0.15-alpha</testfx.version>
+        <classgraph.version>4.8.184</classgraph.version>
+        <commons-lang3.version>3.20.0</commons-lang3.version>
+        <commons-text.version>1.15.0</commons-text.version>
+        <ikonli.version>12.4.0</ikonli.version>
+        <rxjava.version>3.1.12</rxjava.version>
+        <testfx.version>4.0.18</testfx.version>
         <xaos.version>${project.version}</xaos.version>
     </properties>
 
@@ -34,7 +34,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.9.0</version>
+                <version>3.15.0</version>
                 <configuration>
                     <annotationProcessorPaths>
                         <path>
@@ -49,7 +49,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version>
+                <version>3.5.6</version>
                 <configuration>
                     <argLine>
                         --add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED --add-opens javafx.controls/javafx.scene.control=xaos.tools
@@ -120,6 +120,13 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- RxJava Dependencies - - - - - - - - - - - - - - - - - - - - - -  -->
+        <dependency>
+            <groupId>io.reactivex.rxjava3</groupId>
+            <artifactId>rxjava</artifactId>
+            <version>${rxjava.version}</version>
+        </dependency>
+
         <!-- Apache - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -178,6 +185,17 @@
             <artifactId>testfx-core</artifactId>
             <version>${testfx.version}</version>
             <scope>test</scope>
+            <exclusions>
+                <!--
+                    Unused by TestFX, but its presence on the class-path makes
+                    ikonli-core take its OSGi code path and fail with an
+                    IllegalAccessError (it cannot read the unnamed module).
+                -->
+                <exclusion>
+                    <groupId>org.osgi</groupId>
+                    <artifactId>org.osgi.core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.testfx</groupId>

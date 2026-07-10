@@ -1,33 +1,58 @@
 #!/bin/bash
 #
-
+# ******************************************************************************
+#     Builds a self-contained application image of the deployable product.
 #
-# TODO:CR not working yet
+#     Must be executed from the module folder, after "mvn package" and fixup.sh
+#     have populated target/product/mods.
 #
+#     Usage: bin/deploy.sh [app-version]
+#
+#     The application version must be one to three dot-separated integers, whose
+#     first component is greater than zero: jpackage rejects both qualifiers
+#     such as "-SNAPSHOT" and leading zeroes. It is therefore independent of the
+#     Maven project version.
+# ******************************************************************************
 
-cd target
+set -euo pipefail
 
-JAVAFX_MODS_PATH=/Library/Java/JavaVirtualMachines/javafx-jmods-11.0.2
-PACKAGER=/Library/Java/JavaVirtualMachines/jdk.packager/jpackager
-JARS_PATH=./installer-input
-OUTPUT=./installer
+PRODUCT_PATH=./target/product
+MODS_PATH="${PRODUCT_PATH}/mods"
+OUTPUT="${PRODUCT_PATH}/installer"
 APPLICATION_NAME="Simple Application"
-APPLICATION_VERSION="0.5.0-SNAPSHOT"
+APPLICATION_VERSION="${1:-1.0}"
 MAIN_MODULE=xaos.demos.simple.application
-MAIN_JAR=${MAIN_MODULE}-${APPLICATION_VERSION}.jar
-MODULES=`jdeps --module-path ${JARS_PATH} -recursive -summary -filter:module ${MAIN_JAR} | sed -n -e 's/^.*-> //p' | sort | uniq | tr '\n' ',' | sed '$s/.$//'`
+MAIN_CLASS=eu.ess.xaos.demos.simple.SimpleApplication
 
-#${PACKAGER} create-installer pkg \
-${PACKAGER} create-image \
-  --verbose \
-  --echo-mode \
-  --module-path ${JAVAFX_MODS_PATH},${JARS_PATH} \
-  --add-modules ${MODULES},${MAIN_MODULE} \
-  --input ${JARS_PATH} \
-  --output ${OUTPUT} \
+if [ ! -d "${MODS_PATH}" ]; then
+  echo "ERROR: ${MODS_PATH} not found. Run 'mvn package' and bin/fixup.sh first." >&2
+  exit 1
+fi
+
+# Supply a ready-made runtime so that jpackage does not invoke jlink: RxJava
+# pulls in reactive-streams, which is an automatic module, and jlink refuses to
+# link those.
+RUNTIME_IMAGE="${JAVA_HOME:-$(/usr/libexec/java_home 2> /dev/null || true)}"
+
+if [ -z "${RUNTIME_IMAGE}" ] || [ ! -d "${RUNTIME_IMAGE}" ]; then
+  echo "ERROR: cannot locate a JDK. Set JAVA_HOME and retry." >&2
+  exit 1
+fi
+
+rm -rf "${OUTPUT}"
+mkdir -p "${OUTPUT}"
+
+# JavaFX ships its native libraries inside the platform-specific JARs already
+# present in "mods", so no separate javafx-jmods path is required.
+#
+# Use "--type app-image" for a runnable image; replace it with "pkg" (macOS),
+# "deb"/"rpm" (Linux) or "msi" (Windows) to build an installer instead.
+jpackage \
+  --type app-image \
+  --module-path "${MODS_PATH}" \
+  --module ${MAIN_MODULE}/${MAIN_CLASS} \
+  --runtime-image "${RUNTIME_IMAGE}" \
+  --dest "${OUTPUT}" \
   --name "${APPLICATION_NAME}" \
-  --main-jar ${MAIN_JAR} \
-  --module ${MAIN_MODULE} \
-  --version ${APPLICATION_VERSION} \
-  --class se.europeanspallationsource.xaos.demos.simple.SimpleApplication
-
+  --app-version "${APPLICATION_VERSION}" \
+  --java-options --enable-native-access=javafx.graphics

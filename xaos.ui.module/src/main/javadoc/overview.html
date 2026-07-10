@@ -42,33 +42,33 @@ limitations under the License.
             GitHub repository.
         </p>
 
-		<h2>Icons and Icon Providers</h2>
+		<h1>Icons and Icon Providers</h1>
 
 		<p>
-			The {@link se.europeanspallationsource.xaos.ui.control.CommonIcons CommonIcons}
+			The {@link eu.ess.xaos.ui.control.CommonIcons CommonIcons}
 			provides a set of common icons used, for example, by file browsers based
 			on {@link javafx.scene.control.TreeView}.
 		</p>
 		<p>
-			Moreover the {@link se.europeanspallationsource.xaos.ui.control.Icons Icons}
+			Moreover the {@link eu.ess.xaos.ui.control.Icons Icons}
 			class allows for run-time discovery of key-mapped icons provided by
 			implementations of the services defined inside the
-			{@code se.europeanspallationsource.xaos.ui.spi} package.
+			{@code eu.ess.xaos.ui.spi} package.
 		</p>
 
-		<h2>Controls</h2>
+		<h1>Controls</h1>
 
-		<h3>Navigator</h3>
+		<h2>Navigator</h2>
 
 		<p>
-			The {@link se.europeanspallationsource.xaos.ui.control.NavigatorController NavigatorController}
+			The {@link eu.ess.xaos.ui.control.NavigatorController NavigatorController}
 			is a JavaFX control with 9 buttons to navigate a graphical area.
 			Zoom, pan and undo/redo buttons are provided and can be bound to the
 			application code. A popup version of the same control is also
-			available ({@link se.europeanspallationsource.xaos.ui.control.NavigatorPopup NavigatorPopup}).
+			available ({@link eu.ess.xaos.ui.control.NavigatorPopup NavigatorPopup}).
 		</p>
 
-		<h3>SVG Support</h3>
+		<h2>SVG Support</h2>
 
 		<p>
 			XAOS supports SVG natively converting them in a JavaFX controls
@@ -108,15 +108,15 @@ limitations under the License.
   }
 </pre>
 
-		<h3>Tree Controls and Utilities</h3>
+		<h2>Tree Controls and Utilities</h2>
 
-		<h4>Tree Directory Monitor</h4>
+		<h3>Tree Directory Monitor</h3>
 
 		<p>
-			{@link se.europeanspallationsource.xaos.ui.control.tree.directory.TreeDirectoryMonitor TreeDirectoryMonitor}
-			combines a {@link se.europeanspallationsource.xaos.core.util.io.DirectoryWatcher DirectoryWatcher},
-			a {@link se.europeanspallationsource.xaos.ui.control.tree.directory.TreeDirectoryModel TreeDirectoryModel},
-			and a {@link se.europeanspallationsource.xaos.ui.control.tree.directory.TreeDirectoryAsynchronousIO TreeDirectoryAsynchronousIO}.
+			{@link eu.ess.xaos.ui.control.tree.directory.TreeDirectoryMonitor TreeDirectoryMonitor}
+			combines a {@link eu.ess.xaos.core.util.io.DirectoryWatcher DirectoryWatcher},
+			a {@link eu.ess.xaos.ui.control.tree.directory.TreeDirectoryModel TreeDirectoryModel},
+			and a {@link eu.ess.xaos.ui.control.tree.directory.TreeDirectoryAsynchronousIO TreeDirectoryAsynchronousIO}.
 			The added value of this combination is that the tree model is updated
 			automatically to reflect the current state of the file-system, and
 			the application can distinguish file-system changes made via the I/O
@@ -127,33 +127,33 @@ limitations under the License.
 			{@link javafx.scene.control.TreeView TreeView}s.
 		</p>
 
-		<h4>Filterable Tree Items</h4>
+		<h3>Filterable Tree Items</h3>
 
 		<p>
-			{@link se.europeanspallationsource.xaos.ui.control.tree.FilterableTreeItem FilterableTreeItem}
+			{@link eu.ess.xaos.ui.control.tree.FilterableTreeItem FilterableTreeItem}
 			is an extension of {@link javafx.scene.control.TreeItem TreeItem} with the
 			possibility to filter its children.
 		</p>
 
-		<h4>Tree Item Walker</h4>
+		<h3>Tree Item Walker</h3>
 
 		<p>
-			{@link se.europeanspallationsource.xaos.ui.control.tree.TreeItemWalker TreeItemWalker}
+			{@link eu.ess.xaos.ui.control.tree.TreeItemWalker TreeItemWalker}
 			walks a {@link javafx.scene.control.TreeItem TreeItem}s tree depth-first. It
 			supports streaming, visitor pattern and iterator pattern.
 		</p>
 
-		<h4>Tree Item Utilities</h4>
+		<h3>Tree Item Utilities</h3>
 
 		<p>
-			{@link se.europeanspallationsource.xaos.ui.control.tree.TreeItems}
+			{@link eu.ess.xaos.ui.control.tree.TreeItems}
 			provides methods to manipulate trees made of {@link javafx.scene.control.TreeItem}s.
 		</p>
 
-		<h2>Utilities</h2>
+		<h1>Utilities</h1>
 
 		<p>
-			The {@code se.europeanspallationsource.xaos.ui.util} package contains
+			The {@code eu.ess.xaos.ui.util} package contains
 			various utility classes to deal with clipboard, colors, resources, etc.
 		</p>
 

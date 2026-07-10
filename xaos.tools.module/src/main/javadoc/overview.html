@@ -42,12 +42,12 @@ limitations under the License.
             GitHub repository.
         </p>
 
-		<h2>Tools and Utilities</h2>
+		<h1>Tools and Utilities</h1>
 
-		<h3>Service Providers</h3>
+		<h2>Service Providers</h2>
 
 		<p>
-			The {@link se.europeanspallationsource.xaos.tools.annotation.ServiceProvider ServiceProvider}
+			The {@link eu.ess.xaos.tools.annotation.ServiceProvider ServiceProvider}
 			annotation will simplify providing service implementations, taking 
 			care of publishing them in the proper file inside the <code>META-INF/service</code>
 			folder, and verifying the provider is valid and the required
@@ -58,7 +58,7 @@ limitations under the License.
 <pre>
   package my.module;
   import my.module.spi.SomeService;
-  import se.europeanspallationsource.xaos.tools.annotation.ServiceProvider;
+  import eu.ess.xaos.tools.annotation.ServiceProvider;
 
   &#64;ServiceProvider(service=SomeService.class)
   public class MyService implements SomeService {
@@ -67,31 +67,31 @@ limitations under the License.
 </pre>
 
 		<p>
-			Moreover, the {@link se.europeanspallationsource.xaos.tools.annotation.ServiceLoaderUtilities ServiceLoaderUtilities}
+			Moreover, the {@link eu.ess.xaos.tools.annotation.ServiceLoaderUtilities ServiceLoaderUtilities}
 			class will complement the {@link java.util.ServiceLoader} one with
 			few more methods.
 		</p>
 		<p>
-			<b>Note:</b> when using {@link se.europeanspallationsource.xaos.tools.annotation.ServiceProvider ServiceProvider}
-			or {@link se.europeanspallationsource.xaos.tools.annotation.ServiceProviders}
+			<b>Note:</b> when using {@link eu.ess.xaos.tools.annotation.ServiceProvider ServiceProvider}
+			or {@link eu.ess.xaos.tools.annotation.ServiceProviders}
 			the {@code service} class must be listed in the {@code module-info}
 			class inside a <b>uses</b> statement. Moreover a <b>provides … with</b>
 			statement must also be added to declare the annotated class as
 			provider for the parameter class.
 		</p>
 		<p>
-			<b>Note:</b> when using {@link se.europeanspallationsource.xaos.tools.annotation.ServiceLoaderUtilities ServiceLoaderUtilities}
+			<b>Note:</b> when using {@link eu.ess.xaos.tools.annotation.ServiceLoaderUtilities ServiceLoaderUtilities}
 			the service provider interface type must be listed in the
 			{@code module-info} class inside a <b>uses</b> statement.
 		</p>
 
-		<h3>Bundle Annotations</h3>
+		<h2>Bundle Annotations</h2>
 
 		<p>
-			The {@link se.europeanspallationsource.xaos.tools.annotation.Bundle Bundle},
-			{@link se.europeanspallationsource.xaos.tools.annotation.BundleItem BundleItem},
-			{@link se.europeanspallationsource.xaos.tools.annotation.BundleItems BundleItems}
-			annotations and the {@link se.europeanspallationsource.xaos.tools.annotation.Bundles Bundles}
+			The {@link eu.ess.xaos.tools.annotation.Bundle Bundle},
+			{@link eu.ess.xaos.tools.annotation.BundleItem BundleItem},
+			{@link eu.ess.xaos.tools.annotation.BundleItems BundleItems}
+			annotations and the {@link eu.ess.xaos.tools.annotation.Bundles Bundles}
 			class will simplify dealing with resource bundles allowing to define
 			the default bundle entries close to the code that uses them.
 		</p>
@@ -120,15 +120,15 @@ limitations under the License.
   }
 </pre>
 
-		<h3>Java Language Tools</h3>
+		<h2>Java Language Tools</h2>
 
 		<p>
-			The {@link se.europeanspallationsource.xaos.tools.lang.Reflections Reflections}
+			The {@link eu.ess.xaos.tools.lang.Reflections Reflections}
 			class provides few methods to handling fields and method access using
 			the Java Reflection API.
 		</p>
 		<p>
-			<b>Note:</b> when using {@link se.europeanspallationsource.xaos.tools.lang.Reflections Reflections}
+			<b>Note:</b> when using {@link eu.ess.xaos.tools.lang.Reflections Reflections}
 			it is necessary to open the module/package being reflected to
 			<code>xaos.tools</code>. This can be achieved with the following flag
 			being added to the command line launching the application:
@@ -139,7 +139,7 @@ limitations under the License.
 </pre>
 
 		<p>
-			The {@link se.europeanspallationsource.xaos.tools.lang.AbstractAnnotationProcessor AbstractAnnotationProcessor}
+			The {@link eu.ess.xaos.tools.lang.AbstractAnnotationProcessor AbstractAnnotationProcessor}
 			class provides a starting point to implement annotation processors.
 		</p>
 

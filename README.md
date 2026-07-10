@@ -66,9 +66,9 @@ application's `pom.xml` file like the following one:
 
 ```xml
 <dependency>
-  <groupId>se.europeanspallationsource</groupId>
+  <groupId>eu.ess</groupId>
   <artifactId>xaos.module</artifactId>
-  <version>0.5.0-SNAPSHOT</version>
+  <version>0.13-SNAPSHOT</version>
   <scope>compile</scope>
 </dependency>
 ```

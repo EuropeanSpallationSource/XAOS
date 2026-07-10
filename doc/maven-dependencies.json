@@ -26,7 +26,7 @@
     }
   },
   "node-styles": {
-    "se.europeanspallationsource,xaos.tests*": {
+    "eu.ess,xaos.tests*": {
       "type": "box",
       "style": "rounded",
       "color": "#0094CA",
@@ -60,7 +60,7 @@
         "size": 10
       }
     },
-    "se.europeanspallationsource,xaos*": {
+    "eu.ess,xaos*": {
       "type": "box",
       "style": "rounded, filled",
       "fill-color": "#7DE1FF"

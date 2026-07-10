@@ -55,9 +55,9 @@ watcher.watch(root);
 
 ```maven
 <dependency>
-  <groupId>se.europeanspallationsource</groupId>
+  <groupId>eu.ess</groupId>
   <artifactId>xaos.core</artifactId>
-  <version>0.5.0-SNAPSHOT</version>
+  <version>0.13-SNAPSHOT</version>
   <scope>compile</scope>
 </dependency>
 ```

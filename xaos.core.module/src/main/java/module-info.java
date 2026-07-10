@@ -21,7 +21,8 @@
 module xaos.core {
 
 	requires java.logging;
-	requires io.reactivex.rxjava2;
+	requires org.apache.commons.lang3;
+	requires transitive io.reactivex.rxjava3;
 	requires xaos.tools;
 
 	uses eu.ess.xaos.core.util.spi.LogHandlerProvider;

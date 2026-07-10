@@ -22,6 +22,7 @@ module xaos.ui {
 
 	requires java.logging;
 	requires java.xml;
+	requires transitive io.reactivex.rxjava3;
 	requires transitive javafx.base;
 	requires transitive javafx.controls;
 	requires transitive javafx.fxml;

@@ -17,7 +17,7 @@ providing true vectorial rendering.
 The following simple test explains how to display SVGs with XAOS:
 
 ```java
-package se.europeanspallationsource.xaos.ui.components;
+package eu.ess.xaos.ui.components;
 
 
 import java.io.IOException;
@@ -100,9 +100,9 @@ _TreeItems_ provides methods to manipulate trees made of TreeItems.
 
 ```maven
 <dependency>
-  <groupId>se.europeanspallationsource</groupId>
+  <groupId>eu.ess</groupId>
   <artifactId>xaos.ui</artifactId>
-  <version>0.5.0-SNAPSHOT</version>
+  <version>0.13-SNAPSHOT</version>
   <scope>compile</scope>
 </dependency>
 ```

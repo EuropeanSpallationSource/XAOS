@@ -16,7 +16,7 @@
 package eu.ess.xaos.ui.control.tree.directory;
 
 
-import io.reactivex.disposables.Disposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -360,7 +360,7 @@ public class TreeDirectoryModelTest {
 		subscription.dispose();
 		model.dispose();
 
-		assertThat(subscription).hasFieldOrPropertyWithValue("disposed", true);
+		assertThat(subscription.isDisposed()).isTrue();
 		assertThat(model).hasFieldOrPropertyWithValue("disposed", true);
 
 	}
@@ -572,7 +572,7 @@ public class TreeDirectoryModelTest {
 		errorsSubscription.dispose();
 		model.dispose();
 
-		assertThat(errorsSubscription).hasFieldOrPropertyWithValue("disposed", true);
+		assertThat(errorsSubscription.isDisposed()).isTrue();
 		assertThat(model).hasFieldOrPropertyWithValue("disposed", true);
 
 		model = new TreeDirectoryModel<>(
@@ -602,7 +602,7 @@ public class TreeDirectoryModelTest {
 		errorsSubscription.dispose();
 		model.dispose();
 
-		assertThat(errorsSubscription).hasFieldOrPropertyWithValue("disposed", true);
+		assertThat(errorsSubscription.isDisposed()).isTrue();
 		assertThat(model).hasFieldOrPropertyWithValue("disposed", true);
 
 	}
@@ -704,7 +704,7 @@ public class TreeDirectoryModelTest {
 		modificationsSubscription.dispose();
 		model.dispose();
 
-		assertThat(modificationsSubscription).hasFieldOrPropertyWithValue("disposed", true);
+		assertThat(modificationsSubscription.isDisposed()).isTrue();
 		assertThat(model).hasFieldOrPropertyWithValue("disposed", true);
 
 	}

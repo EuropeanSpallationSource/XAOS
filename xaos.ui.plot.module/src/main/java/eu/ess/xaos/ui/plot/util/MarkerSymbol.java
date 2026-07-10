@@ -19,7 +19,7 @@ package eu.ess.xaos.ui.plot.util;
 /**
  * Predefined marker symbols.
  *
- * @author Juan F. Esteban Müller <JuanF.EstebanMuller@ess.eu>
+ * @author Juan F. Esteban Müller &lt;JuanF.EstebanMuller@ess.eu&gt;
  */
 public enum MarkerSymbol {
     SOLID_CIRCLE("-fx-background-radius: 5px; -fx-padding: 5px; "),

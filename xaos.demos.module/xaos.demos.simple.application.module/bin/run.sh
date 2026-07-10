@@ -1,15 +1,24 @@
 #!/bin/bash
 #
+# ******************************************************************************
+#     Runs the deployable product.
+#
+#     Must be executed from inside the product folder (the one containing the
+#     "mods" and "libs" sub-folders), where fixup.sh copies this script.
+# ******************************************************************************
+
+set -euo pipefail
 
 LIBS_PATH=./libs
 MODS_PATH=./mods
-APPLICATION_VERSION="0.5.0-SNAPSHOT"
 MAIN_MODULE=xaos.demos.simple.application
-MAIN_JAR=${MAIN_MODULE}-${APPLICATION_VERSION}.jar
-MODULES=`jdeps --module-path ${MODS_PATH} -recursive -summary -filter:module ${MODS_PATH}/${MAIN_JAR} | sed -n -e 's/^.*-> //p' | sort | uniq | tr '\n' ',' | sed '$s/.$//'`
+MAIN_CLASS=eu.ess.xaos.demos.simple.SimpleApplication
 
+# Service providers (icons, log handlers, ...) are bound automatically by the
+# module system, so no explicit --add-modules is needed here.
 java \
-  -cp ${LIBS_PATH} \
-  -p ${MODS_PATH} \
-  --add-modules ${MODULES} \
-  --module ${MAIN_MODULE}/se.europeanspallationsource.xaos.demos.simple.SimpleApplication
+  -cp "${LIBS_PATH}" \
+  -p "${MODS_PATH}" \
+  --enable-native-access=javafx.graphics \
+  --module ${MAIN_MODULE}/${MAIN_CLASS} \
+  "$@"

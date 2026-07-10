@@ -20,7 +20,7 @@ module-info.java file is present.
 ```java
 package my.module;
 import my.module.spi.SomeService;
-import se.europeanspallationsource.xaos.annotation.ServiceProvider;
+import eu.ess.xaos.tools.annotation.ServiceProvider;
 
 @ServiceProvider(service=SomeService.class)
 public class MyService implements SomeService {
@@ -96,9 +96,9 @@ annotation processors.
 
 ```xml
 <dependency>
-  <groupId>se.europeanspallationsource</groupId>
+  <groupId>eu.ess</groupId>
   <artifactId>xaos.tools</artifactId>
-  <version>0.5.0-SNAPSHOT</version>
+  <version>0.13-SNAPSHOT</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -110,13 +110,13 @@ plugin list:
 <plugin>
   <groupId>org.apache.maven.plugins</groupId>
   <artifactId>maven-compiler-plugin</artifactId>
-  <version>3.8.0</version>
+  <version>3.15.0</version>
   <configuration>
     <annotationProcessorPaths>
       <path>
-        <groupId>se.europeanspallationsource</groupId>
+        <groupId>eu.ess</groupId>
         <artifactId>xaos.tools</artifactId>
-        <version>0.5.0-SNAPSHOT</version>
+        <version>0.13-SNAPSHOT</version>
       </path>
       <!-- ... more ... -->
     </annotationProcessorPaths>
