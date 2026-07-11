@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.logging.Level.WARNING;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ListChangeListener.Change;
 import javafx.scene.paint.Color;
 
@@ -65,6 +66,17 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 
     // Width for all lines in the plot
     private float linesWidth = 1.3f;
+
+    // Set when series or their data change, meaning JavaFX may have created
+    // fresh (unstyled) symbol nodes that must be re-styled on the next layout
+    // pass. Guards the styling loop in layoutPlotChildren() so it does not
+    // re-parse CSS for every node on every layout (e.g. during pan/zoom/resize).
+    private boolean stylesDirty = true;
+
+    // One data-list listener per series, so in-place data updates (setAll on a
+    // series' data) mark the styles dirty. Kept to allow removal when a series
+    // is removed.
+    private final Map<Series<X, Y>, ListChangeListener<Data<X, Y>>> dataListeners = new HashMap<>();
 
     /**
      * Quick way of creating a line chart showing the given {@code data}. X axis
@@ -123,6 +135,7 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 
         for (Series<X, Y> series : data) {
             seriesDrawnInPlot.put(series.getName(), true);
+            attachDataListener(series);
         }
 
         getPlotChildren().add(pluginsNodesGroup);
@@ -203,6 +216,13 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
                 }
             }
         }
+
+        // The line's "shown" style depends on this flag; re-apply it now instead
+        // of relying on a per-layout restyle.
+        int index = getSeriesIndex(name);
+        if (index != -1) {
+            setSeriesStyle(index);
+        }
     }
 
     /**
@@ -249,9 +269,13 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
         //	that are by default visible.
         super.layoutPlotChildren();
 
-        // Make sure all lines and markers have the right style
-        for (int i = 0; i < getData().size(); i++) {
-            setSeriesStyle(i);
+        // Re-style only when series/data changed (i.e. new symbols may have been
+        // created). Re-applying the style to every node on every layout would
+        // re-parse CSS per node on each pan/zoom/resize; per-series style
+        // changes are applied immediately by the setters instead.
+        if (stylesDirty) {
+            restyleAllSeries();
+            stylesDirty = false;
         }
 
         //	Move plugins nodes to front.
@@ -262,6 +286,18 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 
         // Required to update plugins properly.
         layout();
+    }
+
+    /**
+     * Applies the current style to every series. Used both by the deferred
+     * (dirty-triggered) styling in {@link #layoutPlotChildren()} and by the
+     * mutators that change styling shared by all series (line width, marker
+     * visibility, default colors).
+     */
+    private void restyleAllSeries() {
+        for (int i = 0; i < getData().size(); i++) {
+            setSeriesStyle(i);
+        }
     }
 
     /**
@@ -277,6 +313,7 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 
         for (Series removedSeries : c.getRemoved()) {
             seriesDrawnInPlot.remove(removedSeries.getName());
+            detachDataListener(removedSeries);
         }
 
         for (Series<Number, Number> series : c.getAddedSubList()) {
@@ -284,7 +321,26 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
                 setSeriesDrawn(series.getName(), true);
             }
 
+            attachDataListener(series);
             updateSeriesStyle(series);
+        }
+
+        // New series (and their symbols) need styling on the next layout pass.
+        stylesDirty = true;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void attachDataListener(Series series) {
+        ListChangeListener<Data<X, Y>> listener = change -> stylesDirty = true;
+        ((Series<X, Y>) series).getData().addListener(listener);
+        dataListeners.put((Series<X, Y>) series, listener);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void detachDataListener(Series series) {
+        ListChangeListener<Data<X, Y>> listener = dataListeners.remove((Series<X, Y>) series);
+        if (listener != null) {
+            ((Series<X, Y>) series).getData().removeListener(listener);
         }
     }
 
@@ -424,6 +480,7 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
 
     public void setLinesWidth(float width) {
         linesWidth = width;
+        restyleAllSeries();
     }
 
     public void setLineStyle(Series series, LineStyle style) {
@@ -460,6 +517,7 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
      */
     public void setShowMarkers(boolean flag) {
         showMarkersFlag = flag;
+        restyleAllSeries();
     }
 
     /**
@@ -485,6 +543,7 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
     public void setDefaultLineColors() {
         lookup(".chart").setStyle(SeriesColorUtils.styles());
         colorMap.clear();
+        restyleAllSeries();
     }
 
     private String getColorFor(int i) {
