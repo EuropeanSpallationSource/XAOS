@@ -17,6 +17,7 @@ package eu.ess.xaos.ui.control;
 
 
 import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ScanResult;
 import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -337,14 +338,15 @@ public class IconsUITest extends ApplicationTest {
 			.filter(packageName -> packageName.startsWith("java"))
 			.forEach(packageName -> {
 				System.out.println(MessageFormat.format("    Collecting classes from package {0}...", packageName));
-				classNames.addAll(
-					new ClassGraph()
-						.enableSystemJarsAndModules()
-						.whitelistPackages(packageName)
-						.scan()
-						.getAllClasses()
-						.getNames()
-				);
+				try ( ScanResult scanResult = new ClassGraph()
+						.enableSystemJars()
+						.enableSystemModules()
+						.enableNonSystemModules()
+						.enableClassInfo()
+						.acceptPackages(packageName)
+						.scan() ) {
+					classNames.addAll(scanResult.getAllClasses().getNames());
+				}
 			});
 
 		classNames.forEach(className -> {

@@ -53,7 +53,7 @@
                 <version>3.6.0</version>
                 <configuration>
                     <argLine>
-                        --add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED --add-opens javafx.controls/javafx.scene.chart=xaos.ui.plot --add-opens xaos.ui.plot/eu.ess.xaos.ui.plot=javafx.fxml
+                        --add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED --add-opens javafx.controls/javafx.scene.chart=xaos.ui.plot --add-opens xaos.ui.plot/eu.ess.xaos.ui.plot=javafx.fxml ${ui.test.argLine}
                     </argLine>
 
                     <!-- THE FOLLOWING "excludes" AND "includes" SHOULD BE   -->

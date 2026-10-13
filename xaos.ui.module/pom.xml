@@ -19,7 +19,7 @@
 
     <properties>
         <!-- Dependencies Versions -->
-        <classgraph.version>4.8.184</classgraph.version>
+        <classgraph.version>6.0.0</classgraph.version>
         <commons-lang3.version>3.21.0</commons-lang3.version>
         <commons-text.version>1.15.0</commons-text.version>
         <ikonli.version>12.4.0</ikonli.version>
@@ -52,7 +52,7 @@
                 <version>3.6.0</version>
                 <configuration>
                     <argLine>
-                        --add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED --add-opens javafx.controls/javafx.scene.control=xaos.tools
+                        --add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED --add-opens javafx.controls/javafx.scene.control=xaos.tools ${ui.test.argLine}
                     </argLine>
 
                     <!-- THE FOLLOWING "excludes" AND "includes" SHOULD BE   -->

@@ -35,13 +35,20 @@
 
     <properties>
         <java.release>25</java.release>
+        <!-- UI tests run on the JavaFX built-in headless platform, with TestFX
+             injecting input through the glass robot: no display, no OS
+             accessibility permission, and immune to the real mouse. Override
+             with -Dui.test.argLine= to run them on the real desktop. -->
+        <ui.test.argLine>-Dglass.platform=Headless -Dprism.order=sw -Dtestfx.robot=glass</ui.test.argLine>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Auxiliary programs -->
         <!-- Plugin Dependencies Versions -->
         <asm.version>9.11</asm.version>
         <!-- Dependencies Versions -->
         <assertj.version>3.27.7</assertj.version>
-        <javafx.version>25.0.4</javafx.version>
+        <javafx.version>27</javafx.version>
+        <!-- JavaFX feature release, used for the openjfx.io javadoc link. Keep in sync with javafx.version. -->
+        <javafx.release>27</javafx.release>
         <junit.version>4.13.2</junit.version>
     </properties>
 
@@ -178,7 +185,7 @@
                     <isOffline>false</isOffline>
                     <links>
                         <link>https://docs.oracle.com/en/java/javase/${java.release}/docs/api/</link>
-                        <link>https://openjfx.io/javadoc/${java.release}/</link>
+                        <link>https://openjfx.io/javadoc/${javafx.release}/</link>
                     </links>
                     <source>${java.release}</source>
                     <tags>
