@@ -6,7 +6,7 @@
     <parent>
         <groupId>eu.ess</groupId>
         <artifactId>xaos</artifactId>
-        <version>0.15-SNAPSHOT</version>
+        <version>0.15</version>
     </parent>
 
     <artifactId>xaos.ui.gauge</artifactId>
