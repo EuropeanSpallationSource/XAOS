@@ -26,7 +26,8 @@ import org.junit.runners.Suite;
  */
 @RunWith( Suite.class )
 @Suite.SuiteClasses( {
-	LegendUITest.class
+	LegendUITest.class,
+	LineChartFXStyleUITest.class
 } )
 @SuppressWarnings( { "ClassMayBeInterface", "ClassWithoutLogger", "UtilityClassWithoutPrivateConstructor" } )
 public class PlotSuite {
