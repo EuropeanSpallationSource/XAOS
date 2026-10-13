@@ -40,6 +40,8 @@ import java.util.Map;
 import static java.util.logging.Level.WARNING;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ListChangeListener.Change;
+import javafx.scene.AccessibleRole;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
 /**
@@ -133,10 +135,24 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
     public LineChartFX(Axis<X> xAxis, Axis<Y> yAxis, ObservableList<Series<X, Y>> data) {
         super(xAxis, yAxis, data);
 
+        // Symbol nodes are created by this class only for the series showing
+        // markers (see createMissingSymbols). The LineChart createSymbols flag
+        // is chart-wide, and toggling it adds/removes symbols on every series,
+        // so it is kept disabled. If it is turned off externally, LineChart
+        // removes all symbols, including the ones needed by marker series.
+        setCreateSymbols(false);
+        createSymbolsProperty().addListener((obs, oldValue, newValue) -> {
+            if (!newValue) {
+                createAllMissingSymbols();
+            }
+        });
+
         for (Series<X, Y> series : data) {
             seriesDrawnInPlot.put(series.getName(), true);
             attachDataListener(series);
         }
+
+        createAllMissingSymbols();
 
         getPlotChildren().add(pluginsNodesGroup);
     }
@@ -329,6 +345,86 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
         stylesDirty = true;
     }
 
+    @Override
+    protected void seriesAdded(Series<X, Y> series, int seriesIndex) {
+        super.seriesAdded(series, seriesIndex);
+        createMissingSymbols(series);
+    }
+
+    @Override
+    protected void dataItemAdded(Series<X, Y> series, int itemIndex, Data<X, Y> item) {
+        super.dataItemAdded(series, itemIndex, item);
+
+        // Called per added item, so only handle this one.
+        if (markerFlag != null && !getCreateSymbols() && item.getNode() == null) {
+            int seriesIndex = getData().indexOf(series);
+            if (needsSymbols(seriesIndex)) {
+                getPlotChildren().add(createSymbol(seriesIndex, item, itemIndex));
+                stylesDirty = true;
+            }
+        }
+    }
+
+    /**
+     * Whether the series at the given index shows markers, and therefore needs
+     * a symbol node per data point.
+     */
+    private boolean needsSymbols(int seriesIndex) {
+        return seriesIndex != -1 && markerFlag.getOrDefault(seriesIndex, showMarkersFlag);
+    }
+
+    private void createAllMissingSymbols() {
+        for (Series<X, Y> series : getData()) {
+            createMissingSymbols(series);
+        }
+    }
+
+    /**
+     * Creates the symbol nodes missing in the given series if it shows
+     * markers. Line-only series get no symbols, avoiding the per-point
+     * layout/styling overhead. Symbols are styled on the next layout pass or by
+     * the caller.
+     */
+    private void createMissingSymbols(Series<X, Y> series) {
+        // Called by LineChart during super construction, before fields are set.
+        // With createSymbols enabled LineChart already creates all symbols.
+        if (markerFlag == null || getCreateSymbols()) {
+            return;
+        }
+
+        int seriesIndex = getData().indexOf(series);
+        if (!needsSymbols(seriesIndex)) {
+            return;
+        }
+
+        List<Node> symbols = new ArrayList<>();
+        ObservableList<Data<X, Y>> data = series.getData();
+        for (int j = 0; j < data.size(); j++) {
+            Data<X, Y> item = data.get(j);
+            if (item.getNode() == null) {
+                symbols.add(createSymbol(seriesIndex, item, j));
+            }
+        }
+
+        if (!symbols.isEmpty()) {
+            getPlotChildren().addAll(symbols);
+            stylesDirty = true;
+        }
+    }
+
+    /**
+     * Creates the symbol node for a data item, as LineChart does when
+     * createSymbols is enabled. The caller adds it to the plot children.
+     */
+    private Node createSymbol(int seriesIndex, Data<X, Y> item, int itemIndex) {
+        StackPane symbol = new StackPane();
+        symbol.setAccessibleRole(AccessibleRole.TEXT);
+        symbol.setAccessibleRoleDescription("Point");
+        symbol.getStyleClass().addAll("chart-line-symbol", "series" + seriesIndex, "data" + itemIndex);
+        item.setNode(symbol);
+        return symbol;
+    }
+
     @SuppressWarnings("unchecked")
     private void attachDataListener(Series series) {
         ListChangeListener<Data<X, Y>> listener = change -> stylesDirty = true;
@@ -503,20 +599,23 @@ public class LineChartFX<X, Y> extends LineChart<X, Y> implements Pluggable {
         int index = getSeriesIndex(series.getName());
         if (index != -1) {
             markerFlag.put(index, flag);
+            createMissingSymbols(getData().get(index));
             updateSeriesStyle(series);
         }
     }
 
     /**
      * Set the flag to enable/disable showing symbols on the plot. Use this
-     * method instead of setCreateSymbols because the create Symbols flags must
-     * always be enabled in this chart. Enabling/disabling symbols is done by
-     * CSS styling.
+     * method (or {@link #setShowMarker(Series, boolean)}) instead of
+     * setCreateSymbols: this chart creates symbol nodes only for the series
+     * showing markers, while setCreateSymbols applies to all series.
+     * Hiding markers is done by CSS styling.
      *
      * @param flag
      */
     public void setShowMarkers(boolean flag) {
         showMarkersFlag = flag;
+        createAllMissingSymbols();
         restyleAllSeries();
     }
 
