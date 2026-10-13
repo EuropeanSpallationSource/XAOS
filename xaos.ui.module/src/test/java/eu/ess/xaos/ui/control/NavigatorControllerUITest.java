@@ -49,6 +49,7 @@ import static javafx.scene.input.MouseButton.PRIMARY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeFalse;
 import static org.testfx.robot.Motion.DEFAULT;
 
 
@@ -111,6 +112,15 @@ public class NavigatorControllerUITest extends ApplicationTest {
 	public void test() throws InterruptedException {
 
 		System.out.println("  Testing ''NavigatorController''...");
+
+		//	The JavaFX headless robot (up to at least JavaFX 28-ea) reports the
+		//	released button as still down in MOUSE_RELEASED events, so
+		//	Node.isPressed() never goes back to false and the button style stays
+		//	"pressed". Run with -Dui.test.argLine= to test on the real desktop.
+		assumeFalse(
+			"Headless JavaFX robot does not report mouse button releases correctly.",
+			"Headless".equalsIgnoreCase(System.getProperty("glass.platform"))
+		);
 
 		FxRobot robot = new FxRobot();
 

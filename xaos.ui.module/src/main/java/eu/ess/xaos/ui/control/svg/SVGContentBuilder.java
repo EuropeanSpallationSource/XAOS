@@ -1117,7 +1117,7 @@ class SVGContentBuilder {
 
 		while ( tokenizer.hasMoreTokens() ) {
 
-			String transformTxt = tokenizer.nextToken();
+			String transformTxt = StringUtils.stripStart(tokenizer.nextToken(), ", \t\r\n");
 
 			if ( transformTxt.startsWith("translate(") ) {
 
@@ -1132,7 +1132,7 @@ class SVGContentBuilder {
 						double tx = Double.parseDouble(tokens[0]);
 
 						if ( tokens.length == 2 ) {
-							ty = Double.parseDouble(tokens[2]);
+							ty = Double.parseDouble(tokens[1]);
 						}
 
 						transform = transform.createConcatenation(Transform.translate(tx, ty));
@@ -1167,7 +1167,7 @@ class SVGContentBuilder {
 						double sy = sx;
 
 						if ( tokens.length == 2 ) {
-							sy = Double.parseDouble(tokens[2]);
+							sy = Double.parseDouble(tokens[1]);
 						}
 
 						transform = transform.createConcatenation(Transform.scale(sx, sy));

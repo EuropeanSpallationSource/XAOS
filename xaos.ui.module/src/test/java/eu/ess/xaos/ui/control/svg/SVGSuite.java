@@ -29,7 +29,8 @@ import org.junit.runners.Suite;
 	AtomUITest.class,
 	GasCylinderUITest.class,
 	SVGFromInputStreamUITest.class,
-	SVGFromURLUITest.class
+	SVGFromURLUITest.class,
+	SVGTransformTest.class
 } )
 @SuppressWarnings( { "ClassMayBeInterface", "ClassWithoutLogger", "UtilityClassWithoutPrivateConstructor" } )
 public class SVGSuite {
